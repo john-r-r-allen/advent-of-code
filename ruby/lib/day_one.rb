@@ -1,6 +1,6 @@
 require 'csv'
 
-puzzle_input = CSV.read('../../inputs/input_day_1_2021.csv').map { |input| input.first.to_i }
+puzzle_input = CSV.read("../../inputs/input_day_1_2021.csv").map { |input| input.first.to_i }
 
 number_of_increases = 0
 prev_input = nil

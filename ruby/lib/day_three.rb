@@ -1,6 +1,6 @@
 require 'csv'
 
-puzzle_input = CSV.read('../../inputs/input_day_3_2021.csv').map { |input| input.first }
+puzzle_input = CSV.read('../../inputs/input_day_3_2021.csv').map(&:first)
 
 gamma_rate_binary = ''
 epsilon_rate_binary = ''
