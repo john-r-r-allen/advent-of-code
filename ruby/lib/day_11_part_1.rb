@@ -1,7 +1,7 @@
 require 'csv'
 require 'pry'
 
-class DayEleven # rubocop:disable Style/Documentation, Metrics/ClassLength
+class DayEleven # rubocop:disable Style/Documentation
   SAMPLE_INPUT_FILE = '../../inputs/sample_inputs/day_11.csv'.freeze
   INPUT_FILE = '../../inputs/day_11.csv'.freeze
 
