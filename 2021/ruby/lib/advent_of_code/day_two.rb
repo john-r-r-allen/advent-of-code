@@ -1,6 +1,6 @@
 require 'csv'
 
-puzzle_input = CSV.read('../../inputs/input_day_2_2021.csv').map(&:first)
+puzzle_input = CSV.read('../inputs/input_day_2_2021.csv').map(&:first)
 
 horizontal_position = 0
 depth = 0
