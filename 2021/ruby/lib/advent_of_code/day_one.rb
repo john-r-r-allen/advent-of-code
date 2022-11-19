@@ -33,6 +33,7 @@ module AdventOfCode
 
       sonar_sweep_depth.size.times do |position_number|
         next if position_number <= 2
+
         number_of_increases += 1 if sliding_window_depth_increase?(position_number)
       end
 
@@ -44,11 +45,11 @@ module AdventOfCode
     end
 
     def current_sliding_window(position_number)
-      sonar_sweep_depth[position_number-2..position_number]
+      sonar_sweep_depth[position_number - 2..position_number]
     end
 
     def previous_sliding_window(position_number)
-      sonar_sweep_depth[position_number-3..position_number-1]
+      sonar_sweep_depth[position_number - 3..position_number - 1]
     end
   end
 end
