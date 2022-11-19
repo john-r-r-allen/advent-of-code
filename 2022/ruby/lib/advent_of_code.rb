@@ -1,5 +1,5 @@
 require "pry"
-require "active_support"
+require "active_support/all"
 
 require_relative "advent_of_code/day_one"
 require_relative "advent_of_code/day_two"
