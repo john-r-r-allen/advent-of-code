@@ -75,9 +75,7 @@ module AdventOfCode
       oxygen_generator_rate = part_two_array_bit_looping(puzzle_input).to_i(2)
       co2_scrubber_rating = part_two_array_bit_looping(puzzle_input, '0', '1').to_i(2)
 
-      life_support_rating = oxygen_generator_rate * co2_scrubber_rating
-
-      life_support_rating
+      oxygen_generator_rate * co2_scrubber_rating
     end
   end
 end
