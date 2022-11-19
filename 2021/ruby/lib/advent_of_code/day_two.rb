@@ -1,31 +1,47 @@
 require 'csv'
 
-puzzle_input = CSV.read('../inputs/input_day_2_2021.csv').map(&:first)
+module AdventOfCode
+  class DayTwo
+    attr_reader :puzzle_input_path
 
-horizontal_position = 0
-depth = 0
+    def initialize(puzzle_input_path)
+      @puzzle_input_path = puzzle_input_path
+    end
 
-puzzle_input.each do |input|
-  movement = input[input.size - 1].to_i
-  depth += movement if input[0] == 'd'
-  depth -= movement if input[0] == 'u'
-  horizontal_position += movement if input[0] == 'f'
-end
+    def puzzle_input
+      @puzzle_input ||= CSV.read(puzzle_input_path).map(&:first)
+    end
 
-puts "Part 1: #{depth * horizontal_position}"
+    def part_one
+      horizontal_position = 0
+      depth = 0
 
-horizontal_position = 0
-depth = 0
-aim = 0
+      puzzle_input.each do |input|
+        movement = input[input.size - 1].to_i
+        depth += movement if input[0] == 'd'
+        depth -= movement if input[0] == 'u'
+        horizontal_position += movement if input[0] == 'f'
+      end
 
-puzzle_input.each do |input|
-  movement = input[input.size - 1].to_i
-  aim += movement if input[0] == 'd'
-  aim -= movement if input[0] == 'u'
-  if input[0] == 'f'
-    horizontal_position += movement
-    depth += (aim * movement)
+      depth * horizontal_position
+    end
+
+    def part_two
+      horizontal_position = 0
+      depth = 0
+      aim = 0
+
+      puzzle_input.each do |input|
+        movement = input[input.size - 1].to_i
+        aim += movement if input[0] == 'd'
+        aim -= movement if input[0] == 'u'
+        if input[0] == 'f'
+          horizontal_position += movement
+          depth += (aim * movement)
+        end
+      end
+
+      depth * horizontal_position
+    end
   end
 end
-
-puts "Part 2: #{depth * horizontal_position}"
