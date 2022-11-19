@@ -1,4 +1,4 @@
-require 'csv'
+require "csv"
 
 module AdventOfCode
   class DayTwo
@@ -18,24 +18,24 @@ module AdventOfCode
 
       puzzle_input.each do |input|
         movement = input[input.size - 1].to_i
-        depth += movement if input[0] == 'd'
-        depth -= movement if input[0] == 'u'
-        horizontal_position += movement if input[0] == 'f'
+        depth += movement if input[0] == "d"
+        depth -= movement if input[0] == "u"
+        horizontal_position += movement if input[0] == "f"
       end
 
       depth * horizontal_position
     end
 
-    def part_two
+    def part_two # rubocop:disable Metrics/MethodLength
       horizontal_position = 0
       depth = 0
       aim = 0
 
       puzzle_input.each do |input|
         movement = input[input.size - 1].to_i
-        aim += movement if input[0] == 'd'
-        aim -= movement if input[0] == 'u'
-        if input[0] == 'f'
+        aim += movement if input[0] == "d"
+        aim -= movement if input[0] == "u"
+        if input[0] == "f"
           horizontal_position += movement
           depth += (aim * movement)
         end
