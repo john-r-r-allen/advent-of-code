@@ -11,29 +11,16 @@ module AdventOfCode
     end
 
     def part_one
-      horizontal_position = 0
-      depth = 0
-
       puzzle_input.each do |input|
         movement = input[input.size - 1].to_i
-        depth += depth_increase_part_one(input, movement)
-        horizontal_position += horizontal_increase_part_one(input, movement)
+        submarine_part_one.move(input, movement)
       end
 
-      depth * horizontal_position
+      submarine_part_one.horizontal_position_and_depth_product
     end
 
-    def depth_increase_part_one(instruction, movement)
-      return movement if instruction.start_with?("down")
-      return movement * -1 if instruction.start_with?("up")
-
-      0
-    end
-
-    def horizontal_increase_part_one(instruction, movement)
-      return movement if instruction.start_with?("forward")
-
-      0
+    def submarine_part_one
+      @submarine_part_one ||= SubmarinePositioningPartOne.new(initial_horizontal_position: 0, initial_depth: 0)
     end
 
     def part_two # rubocop:disable Metrics/MethodLength
@@ -58,6 +45,39 @@ module AdventOfCode
       return movement * -1 if direction.start_with?("up")
 
       0
+    end
+
+    class SubmarinePositioningPartOne
+      attr_reader :horizontal_position, :depth
+
+      def initialize(initial_horizontal_position:, initial_depth:)
+        @horizontal_position = initial_horizontal_position
+        @depth = initial_depth
+      end
+
+      def move(direction, movement)
+        @horizontal_position += horizontal_increase(direction, movement)
+        @depth += depth_increase(direction, movement)
+
+        self
+      end
+
+      def depth_increase(direction, movement)
+        return movement if direction.start_with?("down")
+        return movement * -1 if direction.start_with?("up")
+
+        0
+      end
+
+      def horizontal_increase(direction, movement)
+        return movement if direction.start_with?("forward")
+
+        0
+      end
+
+      def horizontal_position_and_depth_product
+        horizontal_position * depth
+      end
     end
   end
 end
