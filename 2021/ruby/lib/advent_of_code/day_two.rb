@@ -1,5 +1,3 @@
-require "csv"
-
 module AdventOfCode
   class DayTwo
     attr_reader :puzzle_input_path
@@ -18,12 +16,24 @@ module AdventOfCode
 
       puzzle_input.each do |input|
         movement = input[input.size - 1].to_i
-        depth += movement if input[0] == "d"
-        depth -= movement if input[0] == "u"
-        horizontal_position += movement if input[0] == "f"
+        depth += depth_increase_part_one(input, movement)
+        horizontal_position += horizontal_increase_part_one(input, movement)
       end
 
       depth * horizontal_position
+    end
+
+    def depth_increase_part_one(instruction, movement)
+      return movement if instruction.start_with?("down")
+      return movement * -1 if instruction.start_with?("up")
+
+      0
+    end
+
+    def horizontal_increase_part_one(instruction, movement)
+      return movement if instruction.start_with?("forward")
+
+      0
     end
 
     def part_two # rubocop:disable Metrics/MethodLength
@@ -33,15 +43,21 @@ module AdventOfCode
 
       puzzle_input.each do |input|
         movement = input[input.size - 1].to_i
-        aim += movement if input[0] == "d"
-        aim -= movement if input[0] == "u"
-        if input[0] == "f"
+        aim += aim_increase(input, movement)
+        if input.start_with?("forward")
           horizontal_position += movement
           depth += (aim * movement)
         end
       end
 
       depth * horizontal_position
+    end
+
+    def aim_increase(direction, movement)
+      return movement if direction.start_with?("down")
+      return movement * -1 if direction.start_with?("up")
+
+      0
     end
   end
 end

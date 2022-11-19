@@ -1,4 +1,4 @@
-require_relative "../../lib/advent_of_code/day_two"
+require_relative "../../lib/advent_of_code"
 
 RSpec.describe AdventOfCode::DayTwo do
   let(:indent) { "\t" }
