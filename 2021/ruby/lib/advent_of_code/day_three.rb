@@ -54,12 +54,12 @@ module AdventOfCode
       bit_one_values[index] > bit_zero_values[index]
     end
 
-    def part_two_array_bit_looping(puzzle_input, value_for_more_bit_one = "1", value_for_less_bit_one = "0") # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
-      new_puzzle_input = puzzle_input
+    def part_two_array_bit_looping(value_for_more_bit_one = "1", value_for_less_bit_one = "0") # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
+      new_puzzle_input = diagnostic_report
       bit_one_values = {}
       bit_zero_values = {}
       output_binary = ""
-      positions_in_string = puzzle_input.first.size - 1
+      positions_in_string = diagnostic_report.first.size - 1
       (0..positions_in_string).each do |n|
         bit_one_values[n + 1] = 0
         bit_zero_values[n + 1] = 0
@@ -85,8 +85,8 @@ module AdventOfCode
     end
 
     def part_two
-      oxygen_generator_rate = part_two_array_bit_looping(diagnostic_report).to_i(2)
-      co2_scrubber_rating = part_two_array_bit_looping(diagnostic_report, "0", "1").to_i(2)
+      oxygen_generator_rate = part_two_array_bit_looping.to_i(2)
+      co2_scrubber_rating = part_two_array_bit_looping("0", "1").to_i(2)
 
       oxygen_generator_rate * co2_scrubber_rating
     end
