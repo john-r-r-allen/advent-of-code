@@ -3,38 +3,52 @@ require "csv"
 module AdventOfCode
   class DayThree
     attr_reader :diagnostic_report_path
-    attr_accessor :gamma_rate_binary, :epsilon_rate_binary, :bit_one_values, :bit_zero_values
 
     def initialize(diagnostic_report_path)
       @diagnostic_report_path = diagnostic_report_path
-      @gamma_rate_binary = ""
-      @epsilon_rate_binary = ""
-      @bit_one_values = {}
-      @bit_zero_values = {}
     end
 
     def diagnostic_report
       @diagnostic_report ||= CSV.read(diagnostic_report_path).map(&:first)
     end
 
-    def part_one # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
-      positions_in_string.times do |i|
-        position_in_string = i + 1
-        bit_one_values[position_in_string] = 0
-        bit_zero_values[position_in_string] = 0
-        diagnostic_report.each do |input|
-          bit_one_values[position_in_string] += 1 if input[i] == "1"
-          bit_zero_values[position_in_string] += 1 if input[i] == "0"
-        end
-
-        @gamma_rate_binary += new_gamma_rate_binary_value(position_in_string)
-        @epsilon_rate_binary += new_epsilon_rate_binary_value(position_in_string)
-      end
-
+    def part_one
       gamma_rate_binary.to_i(2) * epsilon_rate_binary.to_i(2)
     end
 
-    def positions_in_string
+    def gamma_rate_binary
+      return @gamma_rate_binary if defined?(@gamma_rate_binary)
+
+      @gamma_rate_binary = ""
+      characters_on_diagnostic_report_line.times do |position|
+        @gamma_rate_binary += new_gamma_rate_binary_value(position)
+      end
+
+      @gamma_rate_binary
+    end
+
+    def epsilon_rate_binary
+      return @epsilon_rate_binary if defined?(@epsilon_rate_binary)
+
+      @epsilon_rate_binary = ""
+      characters_on_diagnostic_report_line.times do |position|
+        @epsilon_rate_binary += new_epsilon_rate_binary_value(position)
+      end
+
+      @epsilon_rate_binary
+    end
+
+    def bits_in_diagnostic_report(bit_value)
+      bit_counter = []
+
+      characters_on_diagnostic_report_line.times do |position|
+        bit_counter << diagnostic_report.count { |report_line| report_line[position] == bit_value }
+      end
+
+      bit_counter
+    end
+
+    def characters_on_diagnostic_report_line
       diagnostic_report.first.size
     end
 
@@ -52,6 +66,14 @@ module AdventOfCode
 
     def more_bit_one_values_than_bit_zero_values?(index)
       bit_one_values[index] > bit_zero_values[index]
+    end
+
+    def bit_one_values
+      @bit_one_values ||= bits_in_diagnostic_report("1")
+    end
+
+    def bit_zero_values
+      @bit_zero_values ||= bits_in_diagnostic_report("0")
     end
 
     def part_two_array_bit_looping(value_for_more_bit_one = "1", value_for_less_bit_one = "0") # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
