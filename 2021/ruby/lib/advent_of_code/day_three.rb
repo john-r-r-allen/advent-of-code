@@ -3,9 +3,14 @@ require "csv"
 module AdventOfCode
   class DayThree
     attr_reader :puzzle_input_path
+    attr_accessor :gamma_rate_binary, :epsilon_rate_binary, :bit_one_values, :bit_zero_values
 
     def initialize(puzzle_input_path)
       @puzzle_input_path = puzzle_input_path
+      @gamma_rate_binary = ""
+      @epsilon_rate_binary = ""
+      @bit_one_values = {}
+      @bit_zero_values = {}
     end
 
     def puzzle_input
@@ -13,14 +18,7 @@ module AdventOfCode
     end
 
     def part_one
-      gamma_rate_binary = ""
-      epsilon_rate_binary = ""
-
-      bit_one_values = {}
-      bit_zero_values = {}
-      positions_in_string = puzzle_input.first.size - 1
-
-      (0..positions_in_string).each do |i|
+      positions_in_string.times do |i|
         bit_one_values[i + 1] = 0
         bit_zero_values[i + 1] = 0
         puzzle_input.each do |input|
@@ -28,16 +26,35 @@ module AdventOfCode
           bit_zero_values[i + 1] += 1 if input[i] == "0"
         end
 
-        if bit_one_values[i + 1] > bit_zero_values[i + 1]
-          gamma_rate_binary += "1"
-          epsilon_rate_binary += "0"
-        else
-          gamma_rate_binary += "0"
-          epsilon_rate_binary += "1"
-        end
+        @gamma_rate_binary += new_gamma_rate_binary_value(i + 1)
+        @epsilon_rate_binary += new_epsilon_rate_binary_value(i + 1)
       end
 
       gamma_rate_binary.to_i(2) * epsilon_rate_binary.to_i(2)
+    end
+
+    def positions_in_string
+      puzzle_input.first.size
+    end
+
+    def new_gamma_rate_binary_value(index)
+      return "1" if more_bit_one_values_than_bit_zero_values?(index)
+
+      "0"
+    end
+
+    def new_epsilon_rate_binary_value(index)
+      return "0" if more_bit_one_values_than_bit_zero_values?(index)
+
+      "1"
+    end
+
+    def more_bit_one_values_than_bit_zero_values?(index)
+      bit_one_values[index] > bit_zero_values[index]
+    end
+
+    def add_to_gamma_rate_binary
+
     end
 
     # ============================================================================
