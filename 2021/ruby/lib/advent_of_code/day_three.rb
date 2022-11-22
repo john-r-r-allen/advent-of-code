@@ -13,28 +13,29 @@ module AdventOfCode
       @bit_zero_values = {}
     end
 
-    def puzzle_input
+    def diagnostic_report
       @puzzle_input ||=  CSV.read(puzzle_input_path).map(&:first)
     end
 
-    def part_one
+    def part_one # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       positions_in_string.times do |i|
-        bit_one_values[i + 1] = 0
-        bit_zero_values[i + 1] = 0
-        puzzle_input.each do |input|
-          bit_one_values[i + 1] += 1 if input[i] == "1"
-          bit_zero_values[i + 1] += 1 if input[i] == "0"
+        position_in_string = i + 1
+        bit_one_values[position_in_string] = 0
+        bit_zero_values[position_in_string] = 0
+        diagnostic_report.each do |input|
+          bit_one_values[position_in_string] += 1 if input[i] == "1"
+          bit_zero_values[position_in_string] += 1 if input[i] == "0"
         end
 
-        @gamma_rate_binary += new_gamma_rate_binary_value(i + 1)
-        @epsilon_rate_binary += new_epsilon_rate_binary_value(i + 1)
+        @gamma_rate_binary += new_gamma_rate_binary_value(position_in_string)
+        @epsilon_rate_binary += new_epsilon_rate_binary_value(position_in_string)
       end
 
       gamma_rate_binary.to_i(2) * epsilon_rate_binary.to_i(2)
     end
 
     def positions_in_string
-      puzzle_input.first.size
+      diagnostic_report.first.size
     end
 
     def new_gamma_rate_binary_value(index)
@@ -52,12 +53,6 @@ module AdventOfCode
     def more_bit_one_values_than_bit_zero_values?(index)
       bit_one_values[index] > bit_zero_values[index]
     end
-
-    def add_to_gamma_rate_binary
-
-    end
-
-    # ============================================================================
 
     def part_two_array_bit_looping(puzzle_input, value_for_more_bit_one = "1", value_for_less_bit_one = "0") # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
       new_puzzle_input = puzzle_input
@@ -80,7 +75,7 @@ module AdventOfCode
             value_for_less_bit_one
           end
 
-        temp = new_puzzle_input.find_all { |input| input[0..n] == output_binary }
+        temp = new_puzzle_input.select { |input| input[0..n] == output_binary }
         new_puzzle_input = temp
         output_binary = temp.first if temp.size == 1
         break if temp.size == 1
@@ -90,8 +85,8 @@ module AdventOfCode
     end
 
     def part_two
-      oxygen_generator_rate = part_two_array_bit_looping(puzzle_input).to_i(2)
-      co2_scrubber_rating = part_two_array_bit_looping(puzzle_input, "0", "1").to_i(2)
+      oxygen_generator_rate = part_two_array_bit_looping(diagnostic_report).to_i(2)
+      co2_scrubber_rating = part_two_array_bit_looping(diagnostic_report, "0", "1").to_i(2)
 
       oxygen_generator_rate * co2_scrubber_rating
     end
