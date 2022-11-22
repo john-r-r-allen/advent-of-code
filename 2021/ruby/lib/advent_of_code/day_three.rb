@@ -2,11 +2,11 @@ require "csv"
 
 module AdventOfCode
   class DayThree
-    attr_reader :puzzle_input_path
+    attr_reader :diagnostic_report_path
     attr_accessor :gamma_rate_binary, :epsilon_rate_binary, :bit_one_values, :bit_zero_values
 
-    def initialize(puzzle_input_path)
-      @puzzle_input_path = puzzle_input_path
+    def initialize(diagnostic_report_path)
+      @diagnostic_report_path = diagnostic_report_path
       @gamma_rate_binary = ""
       @epsilon_rate_binary = ""
       @bit_one_values = {}
@@ -14,7 +14,7 @@ module AdventOfCode
     end
 
     def diagnostic_report
-      @puzzle_input ||=  CSV.read(puzzle_input_path).map(&:first)
+      @diagnostic_report ||=  CSV.read(diagnostic_report_path).map(&:first)
     end
 
     def part_one # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
