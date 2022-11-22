@@ -14,7 +14,7 @@ module AdventOfCode
     end
 
     def diagnostic_report
-      @diagnostic_report ||=  CSV.read(diagnostic_report_path).map(&:first)
+      @diagnostic_report ||= CSV.read(diagnostic_report_path).map(&:first)
     end
 
     def part_one # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
