@@ -198,6 +198,12 @@ module AdventOfCode
       count
     end
 
+    def determine_number(array_to_decipher:, numbers_to_segments:)
+      numbers_to_segments.each do |number, number_info|
+        return number.to_s if number_info[:segment_wires].sort == array_to_decipher.sort
+      end
+    end
+
     def pretty_print_numbers_to_segments(numbers_to_segments)
       puts "numbers_to_segments: {"
       numbers_to_segments.each do |top_key, top_value|
@@ -208,12 +214,6 @@ module AdventOfCode
         puts "\t}"
       end
       puts "}"
-    end
-
-    def determine_number(array_to_decipher:, numbers_to_segments:)
-      numbers_to_segments.each do |number, number_info|
-        return number.to_s if number_info[:segment_wires].sort == array_to_decipher.sort
-      end
     end
   end
 end
