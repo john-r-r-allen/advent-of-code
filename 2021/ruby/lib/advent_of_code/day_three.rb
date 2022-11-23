@@ -38,16 +38,6 @@ module AdventOfCode
       @epsilon_rate_binary
     end
 
-    def bits_in_diagnostic_report(bit_value)
-      bit_counter = []
-
-      characters_on_diagnostic_report_line.times do |position|
-        bit_counter << diagnostic_report.count { |report_line| report_line[position] == bit_value }
-      end
-
-      bit_counter
-    end
-
     def characters_on_diagnostic_report_line
       diagnostic_report.first.size
     end
@@ -76,41 +66,58 @@ module AdventOfCode
       @bit_zero_values ||= bits_in_diagnostic_report("0")
     end
 
-    def part_two_array_bit_looping(value_for_more_bit_one = "1", value_for_less_bit_one = "0") # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
-      new_puzzle_input = diagnostic_report
-      bit_one_values = {}
-      bit_zero_values = {}
+    def bits_in_diagnostic_report(bit_value)
+      bit_counter = []
+
+      characters_on_diagnostic_report_line.times do |position|
+        bit_counter << bits_on_report_line(bit_value:, position:, report: diagnostic_report) # rubocop:disable Layout/SpaceAfterColon
+      end
+
+      bit_counter
+    end
+
+    def bits_on_report_line(bit_value:, position:, report:)
+      report.count { |report_line| report_line[position] == bit_value }
+    end
+
+    def part_two_array_bit_looping(value_for_more_bit_ones, value_for_less_bit_ones) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+      modified_diagnostic_report = diagnostic_report.dup
+      part_two_bit_one_values = []
+      part_two_bit_zero_values = []
       output_binary = ""
-      positions_in_string = diagnostic_report.first.size - 1
-      (0..positions_in_string).each do |n|
-        bit_one_values[n + 1] = 0
-        bit_zero_values[n + 1] = 0
-        new_puzzle_input.each do |input|
-          bit_one_values[n + 1] += 1 if input[n] == "1"
-          bit_zero_values[n + 1] += 1 if input[n] == "0"
-        end
+      characters_on_diagnostic_report_line.times do |i|
+        part_two_bit_one_values << bits_on_report_line(bit_value: "1", position: i, report: modified_diagnostic_report)
+        part_two_bit_zero_values << bits_on_report_line(bit_value: "0", position: i, report: modified_diagnostic_report)
 
         output_binary +=
-          if bit_one_values[n + 1] >= bit_zero_values[n + 1]
-            value_for_more_bit_one
+          if part_two_bit_one_values[i] >= part_two_bit_zero_values[i]
+            value_for_more_bit_ones
           else
-            value_for_less_bit_one
+            value_for_less_bit_ones
           end
 
-        temp = new_puzzle_input.select { |input| input[0..n] == output_binary }
-        new_puzzle_input = temp
-        output_binary = temp.first if temp.size == 1
-        break if temp.size == 1
+        modified_diagnostic_report.select! { |input| input[0..i] == output_binary }
+        output_binary = modified_diagnostic_report.first if modified_diagnostic_report.size == 1
+        break if modified_diagnostic_report.size == 1
       end
 
       output_binary
     end
 
     def part_two
-      oxygen_generator_rate = part_two_array_bit_looping.to_i(2)
-      co2_scrubber_rating = part_two_array_bit_looping("0", "1").to_i(2)
+      life_support_rating
+    end
 
-      oxygen_generator_rate * co2_scrubber_rating
+    def life_support_rating
+      oxygen_generator_rating * co2_scrubber_rating
+    end
+
+    def oxygen_generator_rating
+      part_two_array_bit_looping("1", "0").to_i(2)
+    end
+
+    def co2_scrubber_rating
+      part_two_array_bit_looping("0", "1").to_i(2)
     end
   end
 end
