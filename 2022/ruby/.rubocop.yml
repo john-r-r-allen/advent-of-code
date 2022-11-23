@@ -3,3 +3,4 @@ inherit_gem:
     - default.yml
 AllCops:
   SuggestExtensions: false
+  TargetRubyVersion: 3.1
