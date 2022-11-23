@@ -1,10 +1,10 @@
 require_relative "../../../lib/advent_of_code"
 
-RSpec.describe AdventOfCode::DayFive do
+RSpec.describe AdventOfCode::DayEight do
   let(:indent) { "\t" }
-  let(:input_file_name) { "day_five.csv" }
+  let(:input_file_name) { "day_eight.csv" }
 
-  context "#part_one" do
+  fcontext "#part_one" do
     context "with the real puzzle input" do
       let(:subject) { described_class.new("../inputs/#{input_file_name}") }
 
@@ -12,7 +12,7 @@ RSpec.describe AdventOfCode::DayFive do
         output = subject.part_one
 
         puts "#{indent}part one output: #{output}"
-        expect(output).to eq(6113)
+        expect(output).to eq(367)
       end
     end
 
@@ -23,12 +23,12 @@ RSpec.describe AdventOfCode::DayFive do
         output = subject.part_one
 
         puts "#{indent}part one output: #{output}"
-        expect(output).to eq(5)
+        expect(output).to eq(26)
       end
     end
   end
 
-  context "#part_two" do
+  fcontext "#part_two" do
     context "with the real puzzle input" do
       let(:subject) { described_class.new("../inputs/#{input_file_name}") }
 
@@ -36,7 +36,7 @@ RSpec.describe AdventOfCode::DayFive do
         output = subject.part_two
 
         puts "#{indent}part two output: #{output}"
-        expect(output).to eq(20373)
+        expect(output).to eq(974512)
       end
     end
 
@@ -47,7 +47,7 @@ RSpec.describe AdventOfCode::DayFive do
         output = subject.part_two
 
         puts "#{indent}part two output: #{output}"
-        expect(output).to eq(12)
+        expect(output).to eq(61229)
       end
     end
   end
