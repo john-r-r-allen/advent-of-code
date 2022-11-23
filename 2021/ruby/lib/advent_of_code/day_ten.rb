@@ -1,8 +1,8 @@
 require 'csv'
 require 'pry'
 
-SAMPLE_INPUT_FILE = '../../inputs/sample_inputs/day_10.csv'.freeze
-INPUT_FILE = '../../inputs/day_10.csv'.freeze
+SAMPLE_INPUT_FILE = '../../inputs/sample_inputs/day_ten.csv'.freeze
+INPUT_FILE = '../../inputs/day_ten.csv'.freeze
 OPENING_SYMBOLS = ['(', '[', '{', '<'].freeze
 CLOSE_SYMBOL_LOOKUP = {
   '(': ')',

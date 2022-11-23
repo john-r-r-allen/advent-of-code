@@ -1,8 +1,8 @@
 require 'csv'
 require 'pry'
 
-SAMPLE_INPUT_FILE = '../../inputs/sample_inputs/day_9.csv'.freeze
-INPUT_FILE = '../../inputs/day_9.csv'.freeze
+SAMPLE_INPUT_FILE = '../../inputs/sample_inputs/day_nine.csv'.freeze
+INPUT_FILE = '../../inputs/day_nine.csv'.freeze
 
 def input_file_to_hash(input_file)
   output = {}

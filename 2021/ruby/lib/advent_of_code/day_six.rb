@@ -1,8 +1,8 @@
 require 'csv'
 require 'pry'
 
-SAMPLE_INPUT_FILE = '../../inputs/sample_inputs/day_6.csv'.freeze
-INPUT_FILE = '../../inputs/day_6.csv'.freeze
+SAMPLE_INPUT_FILE = '../../inputs/sample_inputs/day_six.csv'.freeze
+INPUT_FILE = '../../inputs/day_six.csv'.freeze
 
 def input_file_to_array(input_file)
   CSV.read(input_file).first.map(&:to_i)

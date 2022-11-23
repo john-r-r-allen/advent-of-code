@@ -2,8 +2,8 @@ require 'csv'
 require 'pry'
 
 class DayEleven # rubocop:disable Style/Documentation, Metrics/ClassLength
-  SAMPLE_INPUT_FILE = '../../inputs/sample_inputs/day_11.csv'.freeze
-  INPUT_FILE = '../../inputs/day_11.csv'.freeze
+  SAMPLE_INPUT_FILE = '../../inputs/sample_inputs/day_eleven.csv'.freeze
+  INPUT_FILE = '../../inputs/day_eleven.csv'.freeze
 
   attr_reader :total_flashes
 

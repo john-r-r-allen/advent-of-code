@@ -2,8 +2,8 @@ require 'csv'
 require 'pry'
 
 class DayTwelve # rubocop:disable Style/Documentation
-  SAMPLE_INPUT_FILE = '../../inputs/sample_inputs/day_12.csv'.freeze
-  INPUT_FILE = '../../inputs/day_12.csv'.freeze
+  SAMPLE_INPUT_FILE = '../../inputs/sample_inputs/day_twelve.csv'.freeze
+  INPUT_FILE = '../../inputs/day_twelve.csv'.freeze
 
   def initialize; end
 

@@ -1,8 +1,8 @@
 require 'csv'
 require 'pry'
 
-SAMPLE_INPUT_FILE = '../../inputs/sample_inputs/day_8.csv'.freeze
-INPUT_FILE = '../../inputs/day_8.csv'.freeze
+SAMPLE_INPUT_FILE = '../../inputs/sample_inputs/day_eight.csv'.freeze
+INPUT_FILE = '../../inputs/day_eight.csv'.freeze
 # rubocop:disable Style/PercentLiteralDelimiters, Style/StringLiterals, Layout/LineLength, Metrics/BlockLength, Lint/Debugger, Metrics/MethodLength
 
 def input_file_to_hash(input_file)
