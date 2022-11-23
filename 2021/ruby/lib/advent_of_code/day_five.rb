@@ -54,7 +54,7 @@ module AdventOfCode
       ].max
     end
 
-    def file_to_array(input_file)
+    def file_to_array(input_file) # rubocop:disable Metrics/AbcSize
       temp = []
       output = []
 
@@ -87,7 +87,7 @@ module AdventOfCode
       temp
     end
 
-    def mark_lines_on_diagram_for_part_one(diagram:, coordinates:)
+    def mark_lines_on_diagram_for_part_one(diagram:, coordinates:) # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
       x1 = coordinates[:x1]
       x2 = coordinates[:x2]
       y1 = coordinates[:y1]
@@ -110,7 +110,7 @@ module AdventOfCode
       end
     end
 
-    def mark_lines_on_diagram_for_part_two(diagram:, coordinates:)
+    def mark_lines_on_diagram_for_part_two(diagram:, coordinates:) # rubocop:disable Metrics/MethodLength, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity, Metrics/AbcSize
       x1 = coordinates[:x1]
       x2 = coordinates[:x2]
       y1 = coordinates[:y1]
