@@ -1,11 +1,11 @@
 module AdventOfCode
   class DayTen
-    OPENING_SYMBOLS = ['(', '[', '{', '<'].freeze
+    OPENING_SYMBOLS = ["(", "[", "{", "<"].freeze
     CLOSE_SYMBOL_LOOKUP = {
-      '(': ')',
-      '[': ']',
-      '{': '}',
-      '<': '>'
+      '(': ")",
+      '[': "]",
+      '{': "}",
+      '<': ">"
     }.freeze
     ILLEGAL_SYMBOL_POINT_VALUES = {
       ')': 3,
