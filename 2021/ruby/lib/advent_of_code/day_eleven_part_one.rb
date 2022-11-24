@@ -81,17 +81,6 @@ module AdventOfCode
       number_of_steps.times { |_step_number| step }
     end
 
-    def pretty_print_puzzle_input_part_one(_step_number)
-      puzzle_input_part_one.each do |_index, array|
-        numbers = "\t"
-        array.size.times do |array_index|
-          numbers += "#{array[array_index][:energy_level]} "
-        end
-        puts numbers
-      end
-      puts ""
-    end
-
     def part_one
       run_steps(number_of_steps: 100)
       total_flashes
