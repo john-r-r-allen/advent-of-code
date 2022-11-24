@@ -13,8 +13,7 @@ require_relative "advent_of_code/day_eight"
 require_relative "advent_of_code/day_nine"
 require_relative "advent_of_code/day_ten"
 require_relative "advent_of_code/day_eleven_part_one"
-# require_relative "advent_of_code/day_eleven_part_two"
-# require_relative "advent_of_code/day_twelve"
+require_relative "advent_of_code/day_eleven_part_two"
 
 module AdventOfCode
 end
