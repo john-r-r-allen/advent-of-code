@@ -1,6 +1,6 @@
 module AdventOfCode
-  class DayTen
-    OPENING_SYMBOLS = ["(", "[", "{", "<"].freeze
+  class DayTen # rubocop:disable Metrics/ClassLength
+    OPENING_SYMBOLS = %w(\( [ { <).freeze
     CLOSE_SYMBOL_LOOKUP = {
       '(': ")",
       '[': "]",
@@ -37,17 +37,17 @@ module AdventOfCode
       output
     end
 
-    def puzzle_input_part_1
-      @puzzle_input_part_1 ||= original_puzzle_input.dup
+    def puzzle_input_part_one
+      @puzzle_input_part_one ||= original_puzzle_input.dup
     end
 
-    def process_puzzle_input_part_1
-      puzzle_input_part_1.each do |line_number, line_info|
+    def process_puzzle_input_part_one
+      puzzle_input_part_one.each do |line_number, line_info|
         process_line_for_part_one(number: line_number, info: line_info)
       end
     end
 
-    def process_line_for_part_one(number:, info:)
+    def process_line_for_part_one(number:, info:) # rubocop:disable Metrics/MethodLength
       line = []
       first_illegal_characters[number] = nil
       info.each do |symbol|
@@ -79,7 +79,7 @@ module AdventOfCode
     end
 
     def part_one
-      process_puzzle_input_part_1
+      process_puzzle_input_part_one
       sum_illegal_character_values
     end
 
@@ -93,7 +93,7 @@ module AdventOfCode
       end
     end
 
-    def process_line_for_part_two(number:, info:)
+    def process_line_for_part_two(number:, info:) # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
       line = []
       legal_remaining_characters[number] = nil
       first_illegal_characters[number] = nil
@@ -119,7 +119,7 @@ module AdventOfCode
       @legal_remaining_characters ||= {}
     end
 
-    def completion_symbols
+    def completion_symbols # rubocop:disable Metrics/MethodLength
       return @completion_symbols if defined?(@completion_symbols)
 
       @completion_symbols = {}
@@ -137,15 +137,15 @@ module AdventOfCode
       @completion_symbols
     end
 
-    def scored_legal_remaining_characters
+    def scored_legal_remaining_characters # rubocop:disable Metrics/MethodLength
       return @scored_legal_remaining_characters if defined?(@scored_legal_remaining_characters)
 
       @scored_legal_remaining_characters = {}
       completion_symbols.each do |index, symbols|
         @scored_legal_remaining_characters[index] = 0
-        (1..symbols.size).each do |n|
+        symbols.size.times do |n|
           @scored_legal_remaining_characters[index] = (
-            (@scored_legal_remaining_characters[index] * 5) + COMPLETION_SYMBOL_POINT_VALUES[symbols[n - 1].to_sym]
+            (@scored_legal_remaining_characters[index] * 5) + COMPLETION_SYMBOL_POINT_VALUES[symbols[n].to_sym]
           )
         end
       end
@@ -154,8 +154,6 @@ module AdventOfCode
     end
 
     def middle_legal_character_values_score
-      return @middle_legal_character_values_score if defined?(@middle_legal_character_values_score)
-
       legal_character_scores[legal_character_scores.size / 2]
     end
 
