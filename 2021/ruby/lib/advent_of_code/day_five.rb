@@ -1,5 +1,3 @@
-require "csv"
-
 module AdventOfCode
   class DayFive # rubocop:disable Metrics/ClassLength
     attr_reader :hydrothermal_vents

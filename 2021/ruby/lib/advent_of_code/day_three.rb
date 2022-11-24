@@ -1,5 +1,3 @@
-require "csv"
-
 module AdventOfCode
   class DayThree
     attr_reader :diagnostic_report_path

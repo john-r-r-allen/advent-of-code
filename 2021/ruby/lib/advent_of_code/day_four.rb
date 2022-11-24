@@ -1,5 +1,3 @@
-require "csv"
-
 module AdventOfCode
   class DayFour # rubocop:disable Metrics/ClassLength
     EMPTY_ARRAY = [].freeze

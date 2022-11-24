@@ -1,14 +1,12 @@
-require "csv"
-
 module AdventOfCode
-  class DayNine
+  class DayNine # rubocop:disable Metrics/ClassLength
     NOT_A_BASIN = 9
 
     attr_reader :original_puzzle_input_part_two, :cave_floor_heightmap
 
     def initialize(puzzle_input_path)
       @cave_floor_heightmap = input_file_to_hash(puzzle_input_path)
-      @original_puzzle_input_part_two = input_file_to_hash_for_part_2(puzzle_input_path)
+      @original_puzzle_input_part_two = input_file_to_hash_for_part_two(puzzle_input_path)
     end
 
     def input_file_to_hash(input_file)
@@ -53,7 +51,7 @@ module AdventOfCode
       low_points
     end
 
-    def input_file_to_hash_for_part_2(input_file)
+    def input_file_to_hash_for_part_two(input_file)
       output = {}
       CSV.read(input_file).each_with_index do |values, index|
         output[index] = []
@@ -82,7 +80,7 @@ module AdventOfCode
       @basins ||= []
     end
 
-    def add_other_points_to_new_basin(starting_point:, new_basin:)
+    def add_other_points_to_new_basin(starting_point:, new_basin:) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
       col = starting_point[:column]
       row = starting_point[:row]
       up = {

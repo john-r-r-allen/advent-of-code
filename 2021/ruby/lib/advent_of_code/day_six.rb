@@ -1,5 +1,3 @@
-require 'csv'
-
 module AdventOfCode
   class DaySix
     attr_reader :original_puzzle_input

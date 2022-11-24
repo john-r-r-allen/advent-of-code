@@ -1,5 +1,3 @@
-require "csv"
-
 module AdventOfCode
   class DayOne
     attr_reader :input_file

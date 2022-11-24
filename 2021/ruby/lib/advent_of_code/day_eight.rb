@@ -1,7 +1,5 @@
-require "csv"
-
 module AdventOfCode
-  class DayEight
+  class DayEight # rubocop:disable Metrics/ClassLength
     attr_reader :puzzle_input
 
     def initialize(puzzle_input_path)
@@ -12,14 +10,7 @@ module AdventOfCode
       count_recognizable_digits_in_puzzle
     end
 
-    def part_two
-      unique_digit_counts = {
-        1 => 2,
-        4 => 4,
-        7 => 3,
-        8 => 7
-      }
-
+    def part_two # rubocop:disable Metrics/MethodLength, Metrics/PerceivedComplexity, Metrics/AbcSize, Metrics/CyclomaticComplexity
       segments_to_signal_wires = {
         top_left: nil,
         top: nil,
@@ -78,7 +69,7 @@ module AdventOfCode
       end
 
       output_values = []
-      puzzle_input.each do |_puzzle_key, individual_puzzle|
+      puzzle_input.each do |_puzzle_key, individual_puzzle| # rubocop:disable Metrics/BlockLength
         segments_to_signal_wires = {
           top_left: nil,
           top: nil,
@@ -121,7 +112,11 @@ module AdventOfCode
 
         segments_to_signal_wires[:top] = numbers_to_segments[7][:segment_wires] - numbers_to_segments[1][:segment_wires]
         unmatched_segments[6].each do |key, value|
-          remaining_segments = value - segments_to_signal_wires[:top] - numbers_to_segments[7][:segment_wires] - numbers_to_segments[4][:segment_wires]
+          remaining_segments =
+            value -
+            segments_to_signal_wires[:top] -
+            numbers_to_segments[7][:segment_wires] -
+            numbers_to_segments[4][:segment_wires]
           next unless remaining_segments.size == 1
 
           segments_to_signal_wires[:bottom] = remaining_segments
@@ -130,22 +125,42 @@ module AdventOfCode
           break
         end
 
-        unmatched_segments[6].each do |_key, value|
+        unmatched_segments[6].each do |_key, value| # rubocop:disable Style/CombinableLoops
           remaining_segments = numbers_to_segments[8][:segment_wires] - value - numbers_to_segments[1][:segment_wires]
           number = remaining_segments.size == 1 ? 0 : 6
           numbers_to_segments[number][:segment_wires] = value
         end
-        segments_to_signal_wires[:bottom_left] = numbers_to_segments[8][:segment_wires] - numbers_to_segments[9][:segment_wires]
-        segments_to_signal_wires[:top_right] = numbers_to_segments[8][:segment_wires] - numbers_to_segments[6][:segment_wires]
-        segments_to_signal_wires[:middle] = numbers_to_segments[8][:segment_wires] - numbers_to_segments[0][:segment_wires]
-        segments_to_signal_wires[:bottom_right] = numbers_to_segments[1][:segment_wires] - segments_to_signal_wires[:top_right]
-        segments_to_signal_wires[:top_left] = numbers_to_segments[0][:segment_wires] - numbers_to_segments[7][:segment_wires] - segments_to_signal_wires[:bottom_left] - segments_to_signal_wires[:bottom]
+        segments_to_signal_wires[:bottom_left] =
+          numbers_to_segments[8][:segment_wires] - numbers_to_segments[9][:segment_wires]
+        segments_to_signal_wires[:top_right] =
+          numbers_to_segments[8][:segment_wires] - numbers_to_segments[6][:segment_wires]
+        segments_to_signal_wires[:middle] =
+          numbers_to_segments[8][:segment_wires] - numbers_to_segments[0][:segment_wires]
+        segments_to_signal_wires[:bottom_right] =
+          numbers_to_segments[1][:segment_wires] - segments_to_signal_wires[:top_right]
+        segments_to_signal_wires[:top_left] =
+          numbers_to_segments[0][:segment_wires] -
+          numbers_to_segments[7][:segment_wires] -
+          segments_to_signal_wires[:bottom_left] -
+          segments_to_signal_wires[:bottom]
         unmatched_segments[5].each do |_key, value|
-          if (value - segments_to_signal_wires[:top] - segments_to_signal_wires[:top_right] - segments_to_signal_wires[:middle] - segments_to_signal_wires[:bottom_left] - segments_to_signal_wires[:bottom]).size.zero?
+          if (
+            value -
+              segments_to_signal_wires[:top] -
+              segments_to_signal_wires[:top_right] -
+              segments_to_signal_wires[:middle] -
+              segments_to_signal_wires[:bottom_left] -
+              segments_to_signal_wires[:bottom]
+          ).size.zero?
             numbers_to_segments[2][:segment_wires] = value
             next
           end
-          if (value - numbers_to_segments[7][:segment_wires] - segments_to_signal_wires[:middle] - segments_to_signal_wires[:bottom]).size.zero?
+          if (
+            value -
+              numbers_to_segments[7][:segment_wires] -
+              segments_to_signal_wires[:middle] -
+              segments_to_signal_wires[:bottom]
+          ).size.zero?
             numbers_to_segments[3][:segment_wires] = value
             next
           end
@@ -153,15 +168,15 @@ module AdventOfCode
         end
         # pretty_print_numbers_to_segments(numbers_to_segments)
 
-        number_1_array = (1..individual_puzzle[11].size).map { |n| individual_puzzle[11][n - 1] }
-        number_2_array = (1..individual_puzzle[12].size).map { |n| individual_puzzle[12][n - 1] }
-        number_3_array = (1..individual_puzzle[13].size).map { |n| individual_puzzle[13][n - 1] }
-        number_4_array = (1..individual_puzzle[14].size).map { |n| individual_puzzle[14][n - 1] }
-        number_1 = determine_number(array_to_decipher: number_1_array, numbers_to_segments: numbers_to_segments)
-        number_2 = determine_number(array_to_decipher: number_2_array, numbers_to_segments: numbers_to_segments)
-        number_3 = determine_number(array_to_decipher: number_3_array, numbers_to_segments: numbers_to_segments)
-        number_4 = determine_number(array_to_decipher: number_4_array, numbers_to_segments: numbers_to_segments)
-        output_values << (number_1 + number_2 + number_3 + number_4).to_i
+        number_one_array = (1..individual_puzzle[11].size).map { |n| individual_puzzle[11][n - 1] }
+        number_two_array = (1..individual_puzzle[12].size).map { |n| individual_puzzle[12][n - 1] }
+        number_three_array = (1..individual_puzzle[13].size).map { |n| individual_puzzle[13][n - 1] }
+        number_four_array = (1..individual_puzzle[14].size).map { |n| individual_puzzle[14][n - 1] }
+        number_one = determine_number(array_to_decipher: number_one_array, numbers_to_segments: numbers_to_segments)
+        number_two = determine_number(array_to_decipher: number_two_array, numbers_to_segments: numbers_to_segments)
+        number_three = determine_number(array_to_decipher: number_three_array, numbers_to_segments: numbers_to_segments)
+        number_four = determine_number(array_to_decipher: number_four_array, numbers_to_segments: numbers_to_segments)
+        output_values << (number_one + number_two + number_three + number_four).to_i
       end
 
       output_values.sum
@@ -169,7 +184,7 @@ module AdventOfCode
 
     def input_file_to_hash(input_file)
       output = {}
-      temp = CSV.read(input_file).each.map{ |input| input.first.split(' ') }
+      temp = CSV.read(input_file).each.map { |input| input.first.split(" ") }
       temp.each_with_index.map do |array_value, outer_index|
         output[outer_index] = {}
         array_value.each_with_index.map do |value, inner_index|

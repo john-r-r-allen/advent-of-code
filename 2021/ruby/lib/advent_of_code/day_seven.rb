@@ -1,5 +1,3 @@
-require "csv"
-
 module AdventOfCode
   class DaySeven
     attr_reader :crab_positions

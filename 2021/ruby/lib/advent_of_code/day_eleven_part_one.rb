@@ -1,123 +1,115 @@
-require 'csv'
-require 'pry'
+module AdventOfCode
+  class DayElevenPartOne
+    attr_reader :total_flashes, :original_puzzle_input
 
-class DayEleven # rubocop:disable Style/Documentation
-  SAMPLE_INPUT_FILE = '../../inputs/sample_inputs/day_eleven.csv'.freeze
-  INPUT_FILE = '../../inputs/day_eleven.csv'.freeze
-
-  attr_reader :total_flashes
-
-  def initialize(total_flashes)
-    @total_flashes = total_flashes
-  end
-
-  def increment_total_flashes
-    @total_flashes += 1
-  end
-
-  def input_file_to_hash(input_file)
-    output = {}
-    CSV.read(input_file).each_with_index do |values, index|
-      output[index] = []
-      (1..values.first.size).each do |n|
-        output[index] << { energy_level: values.first[n - 1].to_i, flashed_during_turn: false }
-      end
+    def initialize(total_flashes:, puzzle_input_path:)
+      @total_flashes = total_flashes
+      @original_puzzle_input = input_file_to_hash(puzzle_input_path)
     end
-    output
-  end
 
-  def puzzle_input_part_one
-    @puzzle_input_part_one ||= input_file_to_hash(INPUT_FILE)
-  end
-
-  def reset_all_octopuses_flash_for_new_turn
-    puzzle_input_part_one.each do |_column_index, column_info|
-      column_info.each_with_index do |octopus_hash, _row_index|
-        octopus_hash[:flashed_during_turn] = false
-      end
+    def increment_total_flashes
+      @total_flashes += 1
     end
-  end
 
-  def step(debugging: false)
-    puzzle_input_part_one.each do |column_index, column_info|
-      column_info.each_with_index do |octopus_hash, row_index|
-        # puts "step method: Octopus hash #{octopus_hash} while processing row index: #{row_index} and column index #{column_index}" if debugging # rubocop:disable Layout/LineLength
-        octopus_hash[:energy_level] += 1 unless octopus_hash[:flashed_during_turn]
-        next unless octopus_hash[:energy_level] > 9 && !octopus_hash[:flashed_during_turn]
+    def input_file_to_hash(input_file)
+      output = {}
+      CSV.read(input_file).each_with_index do |values, index|
+        output[index] = []
+        (1..values.first.size).each do |n|
+          output[index] << { energy_level: values.first[n - 1].to_i, flashed_during_turn: false }
+        end
+      end
+      output
+    end
 
-        octopus_flash(col: column_index, row: row_index, debugging: debugging)
-        # puts "step method: Octopus hash proccessed. New octopus has: #{octopus_hash}" if debugging
+    def puzzle_input_part_one
+      @puzzle_input_part_one ||= original_puzzle_input.dup
+    end
+
+    def reset_all_octopuses_flash_for_new_turn
+      puzzle_input_part_one.each do |_column_index, column_info|
+        column_info.each_with_index do |octopus_hash, _row_index|
+          octopus_hash[:flashed_during_turn] = false
+        end
       end
     end
 
-    reset_all_octopuses_flash_for_new_turn
-  end
+    def step(debugging: false)
+      puzzle_input_part_one.each do |column_index, column_info|
+        column_info.each_with_index do |octopus_hash, row_index|
+          octopus_hash[:energy_level] += 1 unless octopus_hash[:flashed_during_turn]
+          next unless octopus_hash[:energy_level] > 9 && !octopus_hash[:flashed_during_turn]
 
-  def octopus_flash(col:, row:, debugging: false)
-    increment_total_flashes
-    puts "octopus_flash method: total flashes after increment: #{total_flashes}" if debugging
-    puzzle_input_part_one[col][row][:flashed_during_turn] = true
-    puzzle_input_part_one[col][row][:energy_level] = 0
-
-    increment_energy_levels_for_surrounding_octopuses(col: col, row: row, debugging: debugging)
-  end
-
-  def increment_energy_levels_for_surrounding_octopuses(col:, row:, debugging: false) # rubocop:disable Metrics/AbcSize
-    increment_octopus(col: col - 1, row: row - 1, debugging: debugging) # up and left
-    increment_octopus(col: col - 1, row: row, debugging: debugging) # up
-    increment_octopus(col: col - 1, row: row + 1, debugging: debugging) # up and right
-    increment_octopus(col: col, row: row - 1, debugging: debugging) # left
-    increment_octopus(col: col, row: row + 1, debugging: debugging) # right
-    increment_octopus(col: col + 1, row: row - 1, debugging: debugging) # down and left
-    increment_octopus(col: col + 1, row: row, debugging: debugging) # down
-    increment_octopus(col: col + 1, row: row + 1, debugging: debugging) # down and right
-  end
-
-  def increment_octopus(col:, row:, debugging: false)
-    return unless col >= 0 && row >= 0
-
-    octopus = puzzle_input_part_one[col]&.dig(row)
-    return if octopus.nil?
-
-    octopus[:energy_level] += 1 unless octopus[:flashed_during_turn]
-    return unless octopus[:energy_level] > 9 && !octopus[:flashed_during_turn]
-
-    octopus_flash(col: col, row: row)
-  end
-
-  def run_steps(number_of_steps:, debugging: false)
-    number_of_steps.times do |step_number|
-      puts "Step number #{step_number + 1} begin. Total flashes: #{total_flashes}" if debugging
-      step(debugging: debugging)
-      puts "Step number #{step_number + 1} end. Total flashes: #{total_flashes}" if debugging
-      pretty_print_puzzle_input_part_one(step_number + 1)
-    end
-  end
-
-  def pretty_print_puzzle_input_part_one(step_number)
-    puts "\n\tPuzzle Input after #{step_number} step#{step_number > 1 ? 's' : ''}"
-    puzzle_input_part_one.each do |index, array|
-      numbers = "\t"
-      (array.size).times do |array_index|
-        numbers += "#{array[array_index][:energy_level]} "
+          octopus_flash(col: column_index, row: row_index, debugging: debugging)
+        end
       end
-      puts numbers
-    end
-    puts ''
-  end
 
-  def part_one(debugging: false)
-    if debugging
-      debugging_logs = StringIO.new
-      $stdout = debugging_logs
+      reset_all_octopuses_flash_for_new_turn
     end
 
-    run_steps(number_of_steps: 100, debugging: debugging)
+    def octopus_flash(col:, row:, debugging: false)
+      increment_total_flashes
+      puts "octopus_flash method: total flashes after increment: #{total_flashes}" if debugging
+      puzzle_input_part_one[col][row][:flashed_during_turn] = true
+      puzzle_input_part_one[col][row][:energy_level] = 0
 
-    puts "Part one: Number of flashes after 100 steps: #{total_flashes}"
+      increment_energy_levels_for_surrounding_octopuses(col: col, row: row)
+    end
 
-    File.open('../../outputs/day_11_debugging_logs.txt', 'w') { |f| f.write debugging_logs.string } if debugging
+    def increment_energy_levels_for_surrounding_octopuses(col:, row:) # rubocop:disable Metrics/AbcSize
+      increment_octopus(col: col - 1, row: row - 1) # up and left
+      increment_octopus(col: col - 1, row: row) # up
+      increment_octopus(col: col - 1, row: row + 1) # up and right
+      increment_octopus(col: col, row: row - 1) # left
+      increment_octopus(col: col, row: row + 1) # right
+      increment_octopus(col: col + 1, row: row - 1) # down and left
+      increment_octopus(col: col + 1, row: row) # down
+      increment_octopus(col: col + 1, row: row + 1) # down and right
+    end
+
+    def increment_octopus(col:, row:) # rubocop:disable Metrics/CyclomaticComplexity
+      return unless col >= 0 && row >= 0
+
+      octopus = puzzle_input_part_one[col]&.dig(row)
+      return if octopus.nil?
+
+      octopus[:energy_level] += 1 unless octopus[:flashed_during_turn]
+      return unless octopus[:energy_level] > 9 && !octopus[:flashed_during_turn]
+
+      octopus_flash(col: col, row: row)
+    end
+
+    def run_steps(number_of_steps:, debugging: false)
+      number_of_steps.times do |step_number|
+        puts "Step number #{step_number + 1} begin. Total flashes: #{total_flashes}" if debugging
+        step(debugging: debugging)
+        puts "Step number #{step_number + 1} end. Total flashes: #{total_flashes}" if debugging
+        pretty_print_puzzle_input_part_one(step_number + 1) if debugging
+      end
+    end
+
+    def pretty_print_puzzle_input_part_one(_step_number)
+      puzzle_input_part_one.each do |_index, array|
+        numbers = "\t"
+        array.size.times do |array_index|
+          numbers += "#{array[array_index][:energy_level]} "
+        end
+        puts numbers
+      end
+      puts ""
+    end
+
+    def part_one(debugging: false)
+      if debugging
+        debugging_logs = StringIO.new
+        $stdout = debugging_logs
+      end
+
+      run_steps(number_of_steps: 100, debugging: debugging)
+      puts "Part one: Number of flashes after 100 steps: #{total_flashes}" if debugging
+      File.open("../../outputs/day_11_debugging_logs.txt", "w") { |f| f.write debugging_logs.string } if debugging
+
+      total_flashes
+    end
   end
 end
-
-DayEleven.new(0).part_one(debugging: true)
