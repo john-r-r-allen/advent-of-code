@@ -3,7 +3,7 @@ module AdventOfCode
     attr_reader :calories_held_by_elves
 
     def initialize(puzzle_inputh_path)
-      @calories_held_by_elves = CSV.read(puzzle_inputh_path).map { |input| input.first }
+      @calories_held_by_elves = CSV.read(puzzle_inputh_path).map(&:first)
     end
 
     def part_one
@@ -14,7 +14,7 @@ module AdventOfCode
       calories_per_elf.values.max
     end
 
-    def calories_per_elf
+    def calories_per_elf # rubocop:disable Metrics/MethodLength
       return @calories_per_elf if defined?(@calories_per_elf)
 
       current_elf = 1
@@ -33,6 +33,10 @@ module AdventOfCode
     end
 
     def part_two
+      calories_held_by_top_three_elves
+    end
+
+    def calories_held_by_top_three_elves
       calories_per_elf.values.max(3).sum
     end
   end
