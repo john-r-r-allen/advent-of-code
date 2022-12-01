@@ -31,5 +31,9 @@ module AdventOfCode
 
       @calories_per_elf
     end
+
+    def part_two
+      calories_per_elf.values.max(3).sum
+    end
   end
 end

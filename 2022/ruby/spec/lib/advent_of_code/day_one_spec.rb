@@ -28,11 +28,16 @@ RSpec.describe AdventOfCode::DayOne do
     end
   end
 
-  xcontext "#part_two" do
+  context "#part_two" do
     context "with the real puzzle input" do
       let(:subject) { described_class.new("../inputs/#{input_file_name}") }
 
-      it "returns the expected result"
+      it "returns the expected result" do
+        output = subject.part_two
+
+        puts "#{indent}part two output: #{output}"
+        expect(output).to eq(209691)
+      end
     end
 
     context "with the sample puzzle input" do
@@ -42,7 +47,7 @@ RSpec.describe AdventOfCode::DayOne do
         output = subject.part_two
 
         puts "#{indent}part two output: #{output}"
-        expect(output).to eq(61229)
+        expect(output).to eq(45000)
       end
     end
   end
