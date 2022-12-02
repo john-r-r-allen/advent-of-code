@@ -1,10 +1,5 @@
 module AdventOfCode
   class DayTwo
-    FIRST_COLUMN = {
-      "A" => "rock",
-      "B" => "paper",
-      "C" => "scissors"
-    }.freeze
     SECOND_COLUMN_PART_ONE = {
       "X" => "rock",
       "Y" => "paper",
@@ -67,12 +62,37 @@ module AdventOfCode
     end
 
     def part_one
-      score = 0
-      encrypted_strategy_guide.each do |round|
-        score += play_score(SECOND_COLUMN_PART_ONE[round.last])
-        score += outcome_score(OUTCOMES_PART_ONE[round.first][round.last])
-      end
-      score
+      part_one_play_score + part_one_outcome_score
+    end
+
+    def part_one_play_score
+      @part_one_play_score ||= encrypted_strategy_guide.map do |round|
+        play_score(SECOND_COLUMN_PART_ONE[round.last])
+      end.sum
+    end
+
+    def part_one_outcome_score
+      @part_one_outcome_score ||= encrypted_strategy_guide.map do |round|
+        outcome_score(OUTCOMES_PART_ONE[round.first][round.last])
+      end.sum
+    end
+
+    def part_two
+      part_two_outcome_score + part_two_play_score
+    end
+
+    def part_two_outcome_score
+      @part_two_outcome_score ||= encrypted_strategy_guide.map do |round|
+        outcome_score(OUTCOMES_PART_TWO[round.last])
+      end.sum
+    end
+
+    def part_two_play_score
+      @part_two_play_score ||= encrypted_strategy_guide.map do |round|
+        play_score(
+          determine_play_for_outcome(opponent_play: round.first, outcome: OUTCOMES_PART_TWO[round.last])
+        )
+      end.sum
     end
 
     def play_score(play)
@@ -81,17 +101,6 @@ module AdventOfCode
 
     def outcome_score(outcome)
       OUTCOME_SCORING[outcome]
-    end
-
-    def part_two
-      score = 0
-      encrypted_strategy_guide.each do |round|
-        score += outcome_score(OUTCOMES_PART_TWO[round.last])
-        score += play_score(
-          determine_play_for_outcome(opponent_play: round.first, outcome: OUTCOMES_PART_TWO[round.last])
-        )
-      end
-      score
     end
 
     def determine_play_for_outcome(opponent_play:, outcome:)
