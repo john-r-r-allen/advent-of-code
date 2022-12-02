@@ -10,7 +10,7 @@ RSpec.describe AdventOfCode::DayTwo do
         output = subject.part_one
 
         puts "#{indent}part one output: #{output}"
-        expect(output).to eq(0)
+        expect(output).to eq(12740)
       end
     end
 
@@ -26,7 +26,7 @@ RSpec.describe AdventOfCode::DayTwo do
     end
   end
 
-  fcontext "#part_two" do
+  xcontext "#part_two" do
     context "with the real puzzle input" do
       let(:subject) { described_class.new("../inputs/#{input_file_name}") }
 
