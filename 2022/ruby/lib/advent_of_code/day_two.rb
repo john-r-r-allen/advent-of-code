@@ -5,7 +5,7 @@ module AdventOfCode
       "B" => "paper",
       "C" => "scissors"
     }.freeze
-    SECOND_COLUMN = {
+    SECOND_COLUMN_PART_ONE = {
       "X" => "rock",
       "Y" => "paper",
       "Z" => "scissors"
@@ -15,7 +15,7 @@ module AdventOfCode
       "paper" => 2,
       "scissors" => 3
     }.freeze
-    OUTCOMES = {
+    OUTCOMES_PART_ONE = {
       "A" => {
         "X" => "draw",
         "Y" => "win",
@@ -30,13 +30,35 @@ module AdventOfCode
         "X" => "win",
         "Y" => "lose",
         "Z" => "draw"
-      },
+      }
+    }.freeze
+    OUTCOMES_PART_TWO = {
+      "X" => "lose",
+      "Y" => "draw",
+      "Z" => "win"
     }.freeze
     OUTCOME_SCORING = {
       "lose" => 0,
       "draw" => 3,
       "win" => 6
     }.freeze
+    PLAY_LOOKUP_PART_TWO = {
+      "A" => {
+        "win" => "paper",
+        "draw" => "rock",
+        "lose" => "scissors"
+      },
+      "B" => {
+        "win" => "scissors",
+        "draw" => "paper",
+        "lose" => "rock"
+      },
+      "C" => {
+        "win" => "rock",
+        "draw" => "scissors",
+        "lose" => "paper"
+      },
+    }
 
     attr_reader :encrypted_strategy_guide
 
@@ -47,13 +69,33 @@ module AdventOfCode
     def part_one
       score = 0
       encrypted_strategy_guide.each do |round|
-        score += PLAY_SCORING[SECOND_COLUMN[round.last]] + OUTCOME_SCORING[OUTCOMES[round.first][round.last]]
+        score += play_score(SECOND_COLUMN_PART_ONE[round.last])
+        score += outcome_score(OUTCOMES_PART_ONE[round.first][round.last])
       end
       score
     end
 
+    def play_score(play)
+      PLAY_SCORING[play]
+    end
+
+    def outcome_score(outcome)
+      OUTCOME_SCORING[outcome]
+    end
+
     def part_two
-      nil
+      score = 0
+      encrypted_strategy_guide.each do |round|
+        score += outcome_score(OUTCOMES_PART_TWO[round.last])
+        score += play_score(
+          determine_play_for_outcome(opponent_play: round.first, outcome: OUTCOMES_PART_TWO[round.last])
+        )
+      end
+      score
+    end
+
+    def determine_play_for_outcome(opponent_play:, outcome:)
+      PLAY_LOOKUP_PART_TWO[opponent_play][outcome]
     end
   end
 end

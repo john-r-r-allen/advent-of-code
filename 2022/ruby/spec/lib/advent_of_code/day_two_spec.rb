@@ -2,7 +2,7 @@ RSpec.describe AdventOfCode::DayTwo do
   let(:indent) { "\t" }
   let(:input_file_name) { "day_two.csv" }
 
-  fcontext "#part_one" do
+  context "#part_one" do
     context "with the real puzzle input" do
       let(:subject) { described_class.new("../inputs/#{input_file_name}") }
 
@@ -26,7 +26,7 @@ RSpec.describe AdventOfCode::DayTwo do
     end
   end
 
-  xcontext "#part_two" do
+  context "#part_two" do
     context "with the real puzzle input" do
       let(:subject) { described_class.new("../inputs/#{input_file_name}") }
 
@@ -34,7 +34,7 @@ RSpec.describe AdventOfCode::DayTwo do
         output = subject.part_two
 
         puts "#{indent}part two output: #{output}"
-        expect(output).to eq(0)
+        expect(output).to eq(11980)
       end
     end
 
@@ -45,7 +45,7 @@ RSpec.describe AdventOfCode::DayTwo do
         output = subject.part_two
 
         puts "#{indent}part two output: #{output}"
-        expect(output).to eq(0)
+        expect(output).to eq(12)
       end
     end
   end
