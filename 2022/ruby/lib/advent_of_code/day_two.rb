@@ -57,8 +57,8 @@ module AdventOfCode
         "win" => "rock",
         "draw" => "scissors",
         "lose" => "paper"
-      },
-    }
+      }
+    }.freeze
 
     attr_reader :encrypted_strategy_guide
 
