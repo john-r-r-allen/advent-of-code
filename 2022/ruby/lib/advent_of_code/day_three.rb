@@ -1,6 +1,7 @@
 module AdventOfCode
   class DayThree
     GROUP_SIZE = 3
+    LETTERS_IN_PRIORITY_ORDER = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".freeze
 
     attr_reader :rucksacks
 
@@ -9,7 +10,7 @@ module AdventOfCode
     end
 
     def item_priority(original_item)
-      "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").each_with_index do |item, index|
+      LETTERS_IN_PRIORITY_ORDER.split("").each_with_index do |item, index|
         priority = index + 1
         return priority if item == original_item
       end
