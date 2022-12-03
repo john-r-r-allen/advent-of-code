@@ -43,7 +43,11 @@ module AdventOfCode
     end
 
     def group_items
-      @group_items ||= groups.map { |group| group[0].intersection(group[1], group[2]).first }
+      @group_items ||= groups.map do |group|
+        group_intersection = group.flatten
+        group.map { |group_part| group_intersection = group_intersection.intersection(group_part) }
+        group_intersection.first
+      end
     end
 
     def groups

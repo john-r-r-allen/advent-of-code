@@ -54,7 +54,7 @@ RSpec.describe AdventOfCode::DayThree do
       end
     end
 
-    context "with the sample puzzle input" do
+    fcontext "with the sample puzzle input" do
       let(:subject) { described_class.new("../inputs/sample_inputs/#{input_file_name}") }
 
       it "returns the expected result" do
