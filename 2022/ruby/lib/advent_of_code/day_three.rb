@@ -14,7 +14,22 @@ module AdventOfCode
     end
 
     def part_one
-      nil
+      duplicated_items_in_rucksacks.map { |item| item_priority(item) }.sum
+    end
+
+    def duplicated_items_in_rucksacks
+      @dupllicated_items_in_rucksacks = []
+
+      items_in_rucksack.each do |rucksack_items|
+        items_in_rucksack = rucksack_items.size
+        items_per_container = items_in_rucksack / 2
+        container_one = rucksack_items.split("").first(items_per_container)
+        container_two = rucksack_items.split("").last(items_per_container)
+
+        @dupllicated_items_in_rucksacks << container_one.select { |item| container_two.include?(item) }.uniq.first
+      end
+
+      @dupllicated_items_in_rucksacks
     end
 
     def part_two

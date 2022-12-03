@@ -2,7 +2,7 @@ RSpec.describe AdventOfCode::DayThree do
   let(:indent) { "\t" }
   let(:input_file_name) { "day_three.csv" }
 
-  fcontext "#item_priority" do
+  context "#item_priority" do
     let(:subject) { described_class.new("../inputs/sample_inputs/#{input_file_name}") }
 
     it "returns 1-26 for a-z (1 for a, 2 for b,... 26 for z)" do
@@ -26,7 +26,7 @@ RSpec.describe AdventOfCode::DayThree do
         output = subject.part_one
 
         puts "#{indent}part one output: #{output}"
-        expect(output).to eq(12740)
+        expect(output).to eq(7674)
       end
     end
 
@@ -37,7 +37,7 @@ RSpec.describe AdventOfCode::DayThree do
         output = subject.part_one
 
         puts "#{indent}part one output: #{output}"
-        expect(output).to eq(15)
+        expect(output).to eq(157)
       end
     end
   end
@@ -50,18 +50,18 @@ RSpec.describe AdventOfCode::DayThree do
         output = subject.part_two
 
         puts "#{indent}part two output: #{output}"
-        expect(output).to eq(11980)
+        expect(output).to eq(0)
       end
     end
 
-    context "with the sample puzzle input" do
+    fcontext "with the sample puzzle input" do
       let(:subject) { described_class.new("../inputs/sample_inputs/#{input_file_name}") }
 
       it "returns the expected result" do
         output = subject.part_two
 
         puts "#{indent}part two output: #{output}"
-        expect(output).to eq(12)
+        expect(output).to eq(70)
       end
     end
   end
