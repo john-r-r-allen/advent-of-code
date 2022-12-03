@@ -2,10 +2,10 @@ module AdventOfCode
   class DayThree
     GROUP_SIZE = 3
 
-    attr_reader :items_in_rucksack
+    attr_reader :rucksacks
 
     def initialize(puzzle_input_path)
-      @items_in_rucksack = CSV.read(puzzle_input_path).map(&:first)
+      @rucksacks = CSV.read(puzzle_input_path).map { |row| row.first.split("") }
     end
 
     def item_priority(original_item)
@@ -20,42 +20,54 @@ module AdventOfCode
     end
 
     def repeated_items_in_rucksacks
-      @repeated_items_in_rucksacks = []
-
-      items_in_rucksack.each do |rucksack_items|
-        items_in_rucksack = rucksack_items.size
-        items_per_container = items_in_rucksack / 2
-        container_one = rucksack_items.split("").first(items_per_container)
-        container_two = rucksack_items.split("").last(items_per_container)
-
-        @repeated_items_in_rucksacks << container_one.select { |item| container_two.include?(item) }.uniq.first
+      @repeated_items_in_rucksacks ||= rucksacks.map do |rucksack|
+        rucksack_container_one(rucksack).intersection(rucksack_container_two(rucksack)).uniq.first
       end
+    end
 
-      @repeated_items_in_rucksacks
+    def rucksack_container_one(rucksack)
+      rucksack.first(items_in_rucksack_container(rucksack))
+    end
+
+    def rucksack_container_two(rucksack)
+      rucksack.last(items_in_rucksack_container(rucksack))
+    end
+
+    def items_in_rucksack_container(rucksack)
+      rucksack.size / 2
     end
 
     def part_two
-      items_carried_by_groups.map { |item| item_priority(item) }.sum
+      group_items.map { |item| item_priority(item) }.sum
     end
 
-    def items_carried_by_groups # rubocop:disable Metrics/AbcSize
-      @items_carried_by_groups = []
+    def group_items
+      @group_items ||= groups.map { |group| group[0].intersection(group[1], group[2]).first }
+    end
 
-      number_of_groups.times do |i|
-        group_offset = i * 3
-        rucksack_one = items_in_rucksack[group_offset].split("")
-        rucksack_two = items_in_rucksack[group_offset + 1].split("")
-        rucksack_three = items_in_rucksack[group_offset + 2].split("")
-        @items_carried_by_groups << (rucksack_one & rucksack_two & rucksack_three).first
+    def groups
+      return @groups if defined?(@groups)
+
+      @groups = []
+      number_of_groups.times do |group_number|
+        @groups << rucksacks[first_in_group(group_number)..last_in_group(group_number)]
       end
 
-      @items_carried_by_groups
+      @groups
+    end
+
+    def first_in_group(group_number)
+      group_number * GROUP_SIZE
+    end
+
+    def last_in_group(group_number)
+      first_in_group(group_number) + GROUP_SIZE - 1
     end
 
     def number_of_groups
-      raise "Last group is not a full group!" if items_in_rucksack.size % GROUP_SIZE != 0
+      raise "Last group is not a full group!" if rucksacks.size % GROUP_SIZE != 0
 
-      items_in_rucksack.size / GROUP_SIZE
+      rucksacks.size / GROUP_SIZE
     end
   end
 end
