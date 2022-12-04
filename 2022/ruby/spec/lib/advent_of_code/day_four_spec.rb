@@ -5,7 +5,7 @@ RSpec.describe AdventOfCode::DayFour do
   let(:real_puzzle_input) { "../inputs/#{input_file_name}" }
   let(:subject) { described_class.new(sample_puzzle_input) }
 
-  xdescribe "#part_one" do
+  fdescribe "#part_one" do
     context "with the real puzzle input" do
       let(:subject) { described_class.new(real_puzzle_input) }
 
@@ -13,7 +13,7 @@ RSpec.describe AdventOfCode::DayFour do
         output = subject.part_one
 
         puts "#{indent}part one output: #{output}"
-        expect(output).to eq(0)
+        expect(output).to eq(466)
       end
     end
 
@@ -22,7 +22,7 @@ RSpec.describe AdventOfCode::DayFour do
         output = subject.part_one
 
         puts "#{indent}part one output: #{output}"
-        expect(output).to eq(0)
+        expect(output).to eq(2)
       end
     end
   end
