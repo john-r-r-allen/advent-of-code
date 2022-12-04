@@ -4,7 +4,6 @@ module AdventOfCode
 
     def initialize(puzzle_input_path)
       @puzzle_input = CSV.read(puzzle_input_path)
-
     end
 
     def part_one
@@ -14,6 +13,7 @@ module AdventOfCode
         second_range = convert_range_string_to_range(range_pair.last)
 
         next unless first_range.overlaps?(second_range)
+
         complete_overlaps += 1 if one_range_fully_contains_other_range?(first_range, second_range)\
       end
       complete_overlaps
@@ -21,11 +21,7 @@ module AdventOfCode
 
     def one_range_fully_contains_other_range?(first_range, second_range)
       (first_range.first <= second_range.first && first_range.last >= second_range.last) ||
-      (second_range.first <= first_range.first && second_range.last >= first_range.last)
-    end
-
-    def second_range_fully_contains_first_range?(first_range, second_range)
-
+        (second_range.first <= first_range.first && second_range.last >= first_range.last)
     end
 
     def convert_range_string_to_range(range_string)
@@ -34,7 +30,14 @@ module AdventOfCode
     end
 
     def part_two
-      nil
+      overlaps = 0
+      puzzle_input.each do |range_pair|
+        first_range = convert_range_string_to_range(range_pair.first)
+        second_range = convert_range_string_to_range(range_pair.last)
+
+        overlaps += 1 if first_range.overlaps?(second_range)
+      end
+      overlaps
     end
   end
 end
