@@ -14,7 +14,7 @@ module AdventOfCode
 
         next unless first_range.overlaps?(second_range)
 
-        complete_overlaps += 1 if one_range_fully_contains_other_range?(first_range, second_range)\
+        complete_overlaps += 1 if one_range_fully_contains_other_range?(first_range, second_range)
       end
       complete_overlaps
     end
