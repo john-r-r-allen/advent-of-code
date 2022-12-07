@@ -1,7 +1,6 @@
 require "active_support/all"
 require "csv"
 require "pry"
-require "tree"
 
 require_relative "advent_of_code/day_one"
 require_relative "advent_of_code/day_two"

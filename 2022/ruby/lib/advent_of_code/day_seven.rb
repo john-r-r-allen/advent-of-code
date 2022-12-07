@@ -3,6 +3,7 @@ module AdventOfCode
     ROOT_DIRECTORY = "/".freeze
     DIR_TYPE = "dir".freeze
     FILE_TYPE = "file".freeze
+    COMMAND_START = "$".freeze
     CHANGE_DIRECTORY_COMMAND_START = "$ cd ".freeze
     LIST_DIRECTORY_COMMAND = "$ ls".freeze
     PARENT_DIRECTORY = "..".freeze
@@ -18,7 +19,7 @@ module AdventOfCode
     def initialize(puzzle_input_path)
       @terminal_contents = CSV.read(puzzle_input_path).map(&:first)
       @most_recent_command = nil
-      @root_node = Tree::TreeNode.new(ROOT_DIRECTORY, { type: DIR_TYPE })
+      @root_node = TreeNode.new(parent: nil, name: ROOT_DIRECTORY, content: { type: DIR_TYPE })
       @current_node = nil
       @directories_with_sizes = {}
     end
@@ -31,7 +32,7 @@ module AdventOfCode
 
     def process_terminal_contents
       terminal_contents.each do |terminal_content|
-        if terminal_content.starts_with?("$")
+        if terminal_content.starts_with?(COMMAND_START)
           process_command(terminal_content)
         else
           raise "receiving non commands before directory change" if current_node.nil?
@@ -69,7 +70,7 @@ module AdventOfCode
     end
 
     def process_current_directory_information(terminal_content)
-      return add_directory(terminal_content) if terminal_content.starts_with?("dir ")
+      return add_directory(terminal_content) if terminal_content.starts_with?(DIR_TYPE)
 
       add_file(terminal_content)
     end
@@ -77,14 +78,14 @@ module AdventOfCode
     def add_directory(terminal_content)
       directory = terminal_content[4..]
 
-      @current_node << Tree::TreeNode.new(directory, { type: DIR_TYPE })
+      @current_node.add_child(TreeNode.new(parent: current_node, name: directory, content: { type: DIR_TYPE }))
     end
 
     def add_file(terminal_content)
       find_size_and_name_space = terminal_content.index(" ")
       size = terminal_content[0..(find_size_and_name_space - 1)].to_i
       file_name = terminal_content[(find_size_and_name_space + 1)..]
-      @current_node << Tree::TreeNode.new(file_name, { type: FILE_TYPE, size: })
+      @current_node.add_child(TreeNode.new(parent: current_node, name: file_name, content: { type: FILE_TYPE, size: }))
     end
 
     def determine_directory_sizes
@@ -94,7 +95,7 @@ module AdventOfCode
     def determine_size_of_children(node:, full_name:) # rubocop:disable Metrics/MethodLength
       size = 0
 
-      node.children do |child|
+      node.children.each do |child|
         case child.content[:type]
         when DIR_TYPE
           size_of_child = determine_size_of_children(node: child, full_name: "#{full_name}#{child.name}/")
@@ -104,6 +105,8 @@ module AdventOfCode
           size += size_of_child
         when FILE_TYPE
           size += child.content[:size]
+        else
+          raise "Unknown node type. Failing."
         end
       end
 
@@ -117,5 +120,26 @@ module AdventOfCode
       needed_additional_space = SPACE_NEEDED_FOR_UPDATE - unused_space
       directories_with_sizes.select { |_dir, space| space >= needed_additional_space }.values.min
     end
+  end
+end
+
+class TreeNode
+  include Enumerable
+
+  attr_reader :parent, :name, :content, :children
+
+  def initialize(parent:, name:, content: {})
+    @parent = parent
+    @name = name
+    @content = content
+    @children = []
+  end
+
+  def add_child(child)
+    @children << child
+  end
+
+  def root?
+    parent.nil?
   end
 end
