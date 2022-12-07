@@ -6,3 +6,5 @@ gem "activesupport"
 gem "pry"
 gem "ramsey_cop"
 gem "rspec"
+
+gem "rubytree", "~> 2.0"

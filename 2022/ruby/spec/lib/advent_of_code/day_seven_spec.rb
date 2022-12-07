@@ -5,7 +5,7 @@ RSpec.describe AdventOfCode::DaySeven do
   let(:real_puzzle_input) { "../inputs/#{input_file_name}" }
   let(:subject) { described_class.new(sample_puzzle_input) }
 
-  describe "#part_one" do
+  fdescribe "#part_one" do
     context "with the real puzzle input" do
       let(:subject) { described_class.new(real_puzzle_input) }
 
@@ -17,7 +17,7 @@ RSpec.describe AdventOfCode::DaySeven do
       end
     end
 
-    fcontext "with the sample puzzle input" do
+    context "with the sample puzzle input" do
       it "returns the expected result" do
         output = subject.part_one
 
