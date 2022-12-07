@@ -6,11 +6,14 @@ module AdventOfCode
     CHANGE_DIRECTORY_COMMAND_START = "$ cd ".freeze
     LIST_DIRECTORY_COMMAND = "$ ls".freeze
     PARENT_DIRECTORY = "..".freeze
+    TOTAL_DISK_SPACE = 70_000_000
+    SPACE_NEEDED_FOR_UPDATE = 30_000_000
 
     attr_reader :terminal_contents,
                 :most_recent_command,
                 :root_node,
-                :current_node
+                :current_node,
+                :directories_with_sizes
 
     def initialize(puzzle_input_path)
       @terminal_contents = CSV.read(puzzle_input_path).map(&:first)
@@ -21,6 +24,12 @@ module AdventOfCode
     end
 
     def part_one
+      process_terminal_contents
+      determine_directory_sizes
+      directories_with_sizes.select { |_k,v| v <= 100_000 }.values.sum
+    end
+
+    def process_terminal_contents
       terminal_contents.each do |terminal_content|
         if terminal_content.starts_with?("$")
           process_command(terminal_content)
@@ -31,19 +40,13 @@ module AdventOfCode
           process_current_directory_information(terminal_content)
         end
       end
-
-      determine_directory_sizes
-      @directories_with_sizes.select { |_k,v| v <= 100_000 }.values.sum
     end
 
     def process_command(command)
       @most_recent_command = command
       return change_directory(command) if command.starts_with?(CHANGE_DIRECTORY_COMMAND_START)
 
-      unless command == LIST_DIRECTORY_COMMAND
-        binding.pry
-        raise "Unexpected command"
-      end
+      raise "Unexpected command" unless command == LIST_DIRECTORY_COMMAND
     end
 
     def change_directory(command)
@@ -85,28 +88,35 @@ module AdventOfCode
     end
 
     def determine_directory_sizes
-      @directories_with_sizes[root_node.name] = determine_size_of_children(node: root_node, current_size: 0)
+      @directories_with_sizes[root_node.name] = determine_size_of_children(node: root_node, full_name: root_node.name)
     end
 
-    def determine_size_of_children(node:, current_size:)
-      size = current_size
+    def determine_size_of_children(node:, full_name:)
+      size = 0
 
       node.children do |child|
         if child.content[:type] == DIR_TYPE
-          size_of_child = determine_size_of_children(node: child, current_size: 0)
-          unless @directories_with_sizes.key?(child.name)
-            @directories_with_sizes[child.name] = size_of_child
+          size_of_child = determine_size_of_children(node: child, full_name: "#{full_name}#{child.name}/")
+          if @directories_with_sizes.key?("#{full_name}#{child.name}/")
+            binding.pry
+          else
+            @directories_with_sizes["#{full_name}#{child.name}/"] = size_of_child
           end
           size += size_of_child
+        elsif child.content[:type] == FILE_TYPE
+          size += child.content[:size]
         end
-        size += child.content[:size] if child.content[:type] == FILE_TYPE
       end
 
       size
     end
 
     def part_two
-      nil
+      process_terminal_contents
+      determine_directory_sizes
+      unused_space = TOTAL_DISK_SPACE - directories_with_sizes[ROOT_DIRECTORY]
+      needed_additional_space = SPACE_NEEDED_FOR_UPDATE - unused_space
+      directories_with_sizes.select { |dir, space| space >= needed_additional_space  }.values.min
     end
   end
 end
