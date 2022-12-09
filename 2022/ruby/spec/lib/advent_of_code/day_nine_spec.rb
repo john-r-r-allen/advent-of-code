@@ -35,11 +35,11 @@ RSpec.describe AdventOfCode::DayNine do
         output = subject.part_two
 
         puts "#{indent}part two output: #{output}"
-        expect(output).to eq(0)
+        expect(output).to eq(2602)
       end
     end
 
-    fcontext "with the sample puzzle input" do
+    context "with the sample puzzle input" do
       it "returns the expected result" do
         output = subject.part_two
 
@@ -58,6 +58,5 @@ RSpec.describe AdventOfCode::DayNine do
         end
       end
     end
-
   end
 end

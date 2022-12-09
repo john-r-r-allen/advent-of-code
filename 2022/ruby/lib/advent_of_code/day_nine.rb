@@ -10,7 +10,7 @@ module AdventOfCode
 
     attr_reader :puzzle_input, :knot_zero_coordinates, :knot_one_coordinates, :tail_positions, :knots
 
-    def initialize(puzzle_input_path)
+    def initialize(puzzle_input_path) # rubocop:disable Metrics/AbcSize
       @puzzle_input = CSV.read(puzzle_input_path).map(&:first).map do |input|
         number_of_moves = input.split.last.to_i
         Array.new(number_of_moves) { input.split.first }
@@ -28,11 +28,11 @@ module AdventOfCode
         6 => START_COORDINATES.dup,
         7 => START_COORDINATES.dup,
         8 => START_COORDINATES.dup,
-        9 => START_COORDINATES.dup,
+        9 => START_COORDINATES.dup
       }
     end
 
-    def part_one
+    def part_one # rubocop:disable Metrics/AbcSize
       puzzle_input.each do |direction|
         move_head(direction:, head_knot: knot_zero_coordinates)
         next unless needs_to_move?(knot: knot_one_coordinates, leading_knot: knot_zero_coordinates)
@@ -43,7 +43,7 @@ module AdventOfCode
       tail_positions.uniq.count
     end
 
-    def move_head(direction:, head_knot:)
+    def move_head(direction:, head_knot:) # rubocop:disable Metrics/MethodLength
       case direction
       when RIGHT
         head_knot[:x] += 1
@@ -72,7 +72,7 @@ module AdventOfCode
       knot[:y] -= 1 if leading_knot[:y] < (knot[:y])
     end
 
-    def part_two
+    def part_two # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       puzzle_input.each do |direction|
         knots.each do |knot_number, knot|
           if knot_number.zero?
@@ -80,10 +80,10 @@ module AdventOfCode
             next
           end
 
-          break unless needs_to_move?(knot: knot, leading_knot: knots[knot_number - 1])
+          break unless needs_to_move?(knot:, leading_knot: knots[knot_number - 1])
 
-          move_knot(knot: knot_one_coordinates, leading_knot: knots[knot_number - 1])
-          tail_positions << knot_one_coordinates.dup if knot_number == LAST_KNOT_PART_TWO
+          move_knot(knot:, leading_knot: knots[knot_number - 1])
+          tail_positions << knot.dup if knot_number == LAST_KNOT_PART_TWO
         end
       end
       tail_positions.uniq.count
