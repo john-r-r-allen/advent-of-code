@@ -41,7 +41,6 @@ RSpec.describe AdventOfCode::DayTen do
         expect(output[3]).to eq("#....#..#.#..#.###..#..#..#...#....#..#.")
         expect(output[4]).to eq("#....#..#.#..#.#.#..#..#.#....#..#.#..#.")
         expect(output[5]).to eq("#....###...##..#..#.#..#.####..##..#..#.")
-
       end
     end
 

@@ -71,20 +71,18 @@ module AdventOfCode
       crt
     end
 
-    def draw_pixel(cycle, crt)
+    def draw_pixel(cycle, crt) # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity, Metrics/AbcSize
       position = (cycle - 1) % 40
-      crt_row = 0 if 1 <= cycle && cycle <= 40
-      crt_row = 1 if 41 <= cycle && cycle <= 80
-      crt_row = 2 if 81 <= cycle && cycle <= 120
-      crt_row = 3 if 121 <= cycle && cycle <= 160
-      crt_row = 4 if 161 <= cycle && cycle <= 200
-      crt_row = 5 if 201 <= cycle && cycle <= 240
+      crt_row = 0 if cycle >= 1 && cycle <= 40
+      crt_row = 1 if cycle >= 41 && cycle <= 80
+      crt_row = 2 if cycle >= 81 && cycle <= 120
+      crt_row = 3 if cycle >= 121 && cycle <= 160
+      crt_row = 4 if cycle >= 161 && cycle <= 200
+      crt_row = 5 if cycle >= 201 && cycle <= 240
 
-      if [x_register, x_register + 1, x_register + 2].include?(position)
-        crt[crt_row] += "#"
-      else
-        crt[crt_row] += "."
-      end
+      return crt[crt_row] += "#" if [x_register, x_register + 1, x_register + 2].include?(position)
+
+      crt[crt_row] += "."
     end
   end
 end
