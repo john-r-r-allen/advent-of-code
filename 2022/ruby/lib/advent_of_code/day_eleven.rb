@@ -18,45 +18,7 @@ module AdventOfCode
       interpret_data
     end
 
-    def part_one
-      20.times do |round|
-        monkeys.each do |monkey|
-          monkey.items.each do |item|
-            monkey.increment_item_inspection_count
-            if monkey.operation[:operator] == MULTIPLICATION
-              if monkey.operation[:term] == "old"
-                term = item
-                item *= term
-              else
-                term = monkey.operation[:term]
-                item *= term
-              end
-            elsif monkey.operation[:operator] == ADDITION
-
-              if monkey.operation[:term] == "old"
-                term = item
-              else
-                term = monkey.operation[:term]
-              end
-
-              item += term
-            else
-              raise "Unexpected opearator of #{monkey.operation[:operator]}"
-            end
-            item /= 3
-            if monkey.test(item)
-              monkey.true_test_throw.items << item
-            else
-              monkey.false_test_throw.items << item
-            end
-          end
-          monkey.items = []
-        end
-      end
-      monkeys.map(&:item_inspection_count).sort.last(2).inject(:*)
-    end
-
-    def interpret_data
+    def interpret_data # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
       @monkey_notes.each do |monkey_note|
         next if monkey_note.blank?
 
@@ -71,12 +33,12 @@ module AdventOfCode
     end
 
     def process_new_monkey(monkey_note)
-      @current_monkey = Monkey.new(monkey_note.split.last.gsub(":", "").to_i)
+      @current_monkey = Monkey.new(monkey_note.split.last.delete(",").to_i)
       @monkeys << current_monkey
     end
 
     def process_starting_items(monkey_note)
-      items = monkey_note.split(" ").map { |item| item.gsub(",", "").to_i }[2..]
+      items = monkey_note.split(" ").map { |item| item.delete(",").to_i }[2..]
       current_monkey.items = items
     end
 
@@ -103,45 +65,59 @@ module AdventOfCode
       end
     end
 
+    def part_one
+      20.times { check_items_for_monkeys(part: "one") }
+      monkeys.map(&:item_inspection_count).sort.last(2).inject(:*)
+    end
+
+    def part_one_worry_reduction(item)
+      item / 3
+    end
+
     def common_factor
       @common_factor ||= monkeys.map(&:test_divisible_by).inject(:*)
     end
 
     def part_two
-
-      10_000.times do |round|
-        monkeys.each do |monkey|
-          monkey.items.each do |item|
-            item = item % common_factor
-            monkey.increment_item_inspection_count
-            if monkey.operation[:operator] == MULTIPLICATION
-              if monkey.operation[:term] == "old"
-                item *= item
-              else
-                item *= monkey.operation[:term]
-              end
-            elsif monkey.operation[:operator] == ADDITION
-
-              if monkey.operation[:term] == "old"
-                term = item
-              else
-                term = monkey.operation[:term]
-              end
-
-              item += term
-            else
-              raise "Unexpected opearator of #{monkey.operation[:operator]}"
-            end
-            if monkey.test(item)
-              monkey.true_test_throw.items << item
-            else
-              monkey.false_test_throw.items << item
-            end
-          end
-          monkey.items = []
-        end
-      end
+      10_000.times { check_items_for_monkeys(part: "two") }
       monkeys.map(&:item_inspection_count).sort.last(2).inject(:*)
+    end
+
+    def check_items_for_monkeys(part:) # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
+      raise "Invalid part passed to check_items_for_monkeys" unless %w(one two).include?(part)
+
+      monkeys.each do |monkey|
+        monkey.items.each do |item|
+          monkey.increment_item_inspection_count
+          item = apply_monkey_operation(monkey, item)
+          item = public_send("part_#{part}_worry_reduction", item)
+          if monkey.test?(item)
+            monkey.true_test_throw.items << item
+          else
+            monkey.false_test_throw.items << item
+          end
+        end
+        monkey.items = []
+      end
+    end
+
+    def apply_monkey_operation(monkey, item) # rubocop:disable Metrics/AbcSize
+      case monkey.operation[:operator]
+      when MULTIPLICATION
+        return item * item if monkey.operation[:term] == "old"
+
+        item * monkey.operation[:term]
+      when ADDITION
+        return item + item if monkey.operation[:term] == "old"
+
+        item + monkey.operation[:term]
+      else
+        raise "Unexpected opearator of #{monkey.operation[:operator]}"
+      end
+    end
+
+    def part_two_worry_reduction(item)
+      item % common_factor # Reduces the item number without changing how it will interact with the monkey's tests
     end
   end
 end
@@ -169,7 +145,7 @@ class Monkey
     @item_inspection_count = 0
   end
 
-  def test(number)
+  def test?(number)
     (number % test_divisible_by).zero?
   end
 
@@ -183,7 +159,7 @@ class Monkey
     operator = operation_data.first
     term = operation_data.last
     term = term.to_i unless term == "old"
-    @operation = { operator: operator, term: term}
+    @operation = { operator:, term: }
   end
 
   def test_divisible_by=(number)
