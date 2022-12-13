@@ -1,39 +1,37 @@
 module AdventOfCode
   class DayTwelve
-    attr_reader :heightmap, :paths_to_finish, :debugging
+    attr_reader :heightmap, :paths_to_finish, :graph
+
     delegate :data,
              :nodes,
              :start_position,
              :end_position,
-             :up_position,
-             :down_position,
-             :right_position,
-             :left_position,
+             :up_neighbor,
+             :down_neighbor,
+             :right_neighbor,
+             :left_neighbor,
              :able_to_move?,
+             :elevation,
              to: :heightmap
 
     def initialize(heightmap_path)
       @heightmap = HeightMap.new(heightmap_path)
       @paths_to_finish = []
+      @graph = Graph.new
     end
 
     def part_one
-      graph = Graph.new
-      nodes.each do |node|
-        neighbors(node).each do |neighbor|
-          graph.add_edge(node, neighbor)
-        end
-      end
+      add_node_connections_to_graph
       graph.shortest_path(start_position, end_position)[:distance]
     end
 
     def neighbors(original_node)
       available_neighbors = []
 
-      available_neighbors << right_neighbor(original_node)
-      available_neighbors << left_neighbor(original_node)
-      available_neighbors << up_neighbor(original_node)
-      available_neighbors << down_neighbor(original_node)
+      available_neighbors << find_node(right_neighbor(original_node))
+      available_neighbors << find_node(left_neighbor(original_node))
+      available_neighbors << find_node(up_neighbor(original_node))
+      available_neighbors << find_node(down_neighbor(original_node))
 
       available_neighbors.compact!
       available_neighbors.select do |neighbor|
@@ -41,24 +39,24 @@ module AdventOfCode
       end
     end
 
-    def right_neighbor(original_node)
-      nodes.select { |node| node == right_position(original_node) }.first
-    end
-
-    def left_neighbor(original_node)
-      nodes.select { |node| node == left_position(original_node) }.first
-    end
-
-    def up_neighbor(original_node)
-      nodes.select { |node| node == up_position(original_node) }.first
-    end
-
-    def down_neighbor(original_node)
-      nodes.select { |node| node == down_position(original_node) }.first
+    def find_node(search_node)
+      nodes.find { |node| node == search_node }
     end
 
     def part_two
-      nil
+      add_node_connections_to_graph
+      full_elevation_hikes = {}
+      nodes.each do |node|
+        full_elevation_hikes[node] = graph.shortest_path(node, end_position)[:distance] if elevation(node).zero?
+      end
+
+      full_elevation_hikes.values.reject { |value| value == "no path" }.min
+    end
+
+    def add_node_connections_to_graph
+      nodes.each do |node|
+        neighbors(node).each { |neighbor| graph.add_edge(node, neighbor) }
+      end
     end
   end
 end
@@ -87,7 +85,7 @@ class HeightMap
     @nodes
   end
 
-  def print_heightmap
+  def print_heightmap # rubocop:disable Metrics/MethodLength
     row_outputs = []
     row_outputs << "=" * 193
     data.each_with_index do |row, row_index|
@@ -99,7 +97,7 @@ class HeightMap
       row_outputs << row_output
     end
     row_outputs << "=" * 193
-    row_outputs.reverse.each { |row_output| puts row_output }
+    row_outputs.reverse_each { |row_output| puts row_output }
   end
 
   def start_position
@@ -133,7 +131,7 @@ class HeightMap
   end
 
   def elevation(position)
-    elevation_character = data.dig(position[:row])&.dig(position[:column])
+    elevation_character = data[position[:row]]&.dig(position[:column])
     raise "Invalid position provided to elevation" if elevation_character.nil?
     return 0 if elevation_character == "S"
     return 25 if elevation_character == "E"
@@ -149,19 +147,19 @@ class HeightMap
     data.first.size - 1
   end
 
-  def down_position(current_position)
+  def down_neighbor(current_position)
     { row: current_position[:row] - 1, column: current_position[:column] }
   end
 
-  def up_position(current_position)
+  def up_neighbor(current_position)
     { row: current_position[:row] + 1, column: current_position[:column] }
   end
 
-  def right_position(current_position)
+  def right_neighbor(current_position)
     { row: current_position[:row], column: current_position[:column] + 1 }
   end
 
-  def left_position(current_position)
+  def left_neighbor(current_position)
     { row: current_position[:row], column: current_position[:column] - 1 }
   end
 
@@ -172,34 +170,34 @@ class HeightMap
   end
 end
 
-require 'set'
+require "set"
 
 class Graph
-  attr_reader :graph, :nodes, :previous, :distance
   INFINITY = 1 << 64
 
+  attr_reader :graph, :nodes, :previous, :distance
+
   def initialize
-    @graph = {} # the graph // {node => { edge1 => weight, edge2 => weight}, node2 => ...
+    @graph = {}
     @nodes = Set.new
   end
 
   def connect_graph(source, target, weight = 1)
-    if graph.has_key?(source)
+    if graph.key?(source)
       graph[source][target] = weight
     else
-      graph[source] = {target => weight}
+      graph[source] = { target => weight }
     end
     nodes << source
   end
 
-  # connect each node bidirectional
   def add_edge(source, target, weight = 1)
-    connect_graph(source, target, weight) #directional graph
+    connect_graph(source, target, weight) # directional graph
   end
 
-  def dijkstra(source)
-    @distance={}
-    @previous={}
+  def dijkstra(source) # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
+    @distance = {}
+    @previous = {}
     nodes.each do |node| # initialization
       @distance[node] = INFINITY # Unknown distance from source to vertex
       @previous[node] = -1 # Previous node in optimal path from source
@@ -213,11 +211,11 @@ class Graph
     until queue.empty?
       u = queue.min_by { |n| @distance[n] }
 
-      break if (@distance[u] == INFINITY)
+      break if @distance[u] == INFINITY
 
       queue.delete(u)
 
-      graph[u].keys.each do |vertex|
+      graph[u].each_key do |vertex|
         alt = @distance[u] + graph[u][vertex]
         next if alt >= @distance[vertex]
 
@@ -235,14 +233,12 @@ class Graph
     @path << dest
   end
 
-  def shortest_path(starting_position, ending_position)
+  def shortest_path(starting_position, ending_position) # rubocop:disable Metrics/MethodLength
     @source = starting_position
     dijkstra(starting_position)
-    # nodes.each do |dest|
-    @path=[]
+    @path = []
 
-    find_path ending_position
-
+    find_path(ending_position)
     actual_distance =
       if @distance[ending_position] != INFINITY
         @distance[ending_position]
@@ -250,18 +246,17 @@ class Graph
         "no path"
       end
 
-
     { path: @path.join("-->"), distance: actual_distance }
   end
 
-  def shortest_paths(starting_position)
-    @graph_paths={}
+  def shortest_paths(starting_position) # rubocop:disable Metrics/MethodLength
+    @graph_paths = {}
     @source = starting_position
     dijkstra(starting_position)
     nodes.each do |dest|
-      @path=[]
+      @path = []
 
-      find_path dest
+      find_path(dest)
 
       actual_distance =
         if @distance[dest] != INFINITY
