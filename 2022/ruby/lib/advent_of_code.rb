@@ -1,4 +1,5 @@
 require "active_support/all"
+require "colorize"
 require "csv"
 require "pry"
 

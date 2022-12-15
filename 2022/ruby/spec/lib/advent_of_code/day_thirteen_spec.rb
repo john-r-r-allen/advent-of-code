@@ -5,7 +5,7 @@ RSpec.describe AdventOfCode::DayThirteen do
   let(:real_puzzle_input) { "../inputs/#{input_file_name}" }
   let(:subject) { described_class.new(sample_puzzle_input) }
 
-  xdescribe "#part_one" do
+  describe "#part_one" do
     context "with the real puzzle input" do
       let(:subject) { described_class.new(real_puzzle_input) }
 
@@ -13,7 +13,7 @@ RSpec.describe AdventOfCode::DayThirteen do
         output = subject.part_one
 
         puts "#{indent}part one output: #{output}"
-        expect(output).to eq(0)
+        expect(output).to eq(4809)
       end
     end
 
@@ -22,12 +22,12 @@ RSpec.describe AdventOfCode::DayThirteen do
         output = subject.part_one
 
         puts "#{indent}part one output: #{output}"
-        expect(output).to eq(0)
+        expect(output).to eq(13)
       end
     end
   end
 
-  xdescribe "#part_two" do
+  fdescribe "#part_two" do
     context "with the real puzzle input" do
       let(:subject) { described_class.new(real_puzzle_input) }
 
@@ -35,16 +35,16 @@ RSpec.describe AdventOfCode::DayThirteen do
         output = subject.part_two
 
         puts "#{indent}part two output: #{output}"
-        expect(output).to eq(0)
+        expect(output).not_to eq(22713)
       end
     end
 
-    context "with the sample puzzle input" do
+    fcontext "with the sample puzzle input" do
       it "returns the expected result" do
         output = subject.part_two
 
         puts "#{indent}part two output: #{output}"
-        expect(output).to eq(0)
+        expect(output).to eq(140)
       end
     end
   end
