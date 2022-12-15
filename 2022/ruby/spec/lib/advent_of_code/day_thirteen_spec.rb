@@ -35,7 +35,7 @@ RSpec.describe AdventOfCode::DayThirteen do
         output = subject.part_two
 
         puts "#{indent}part two output: #{output}"
-        expect(output).not_to eq(22713)
+        expect(output).to eq(22600)
       end
     end
 
