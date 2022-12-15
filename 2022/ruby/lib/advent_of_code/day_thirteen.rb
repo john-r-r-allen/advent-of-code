@@ -36,6 +36,7 @@ module AdventOfCode
       @received_packets.append(DECODER_PACKET_ONE, DECODER_PACKET_TWO)
       sortable_packets = received_packets.map { |packet| Side.new(packet) }
       sortable_packets.sort!
+      # TODO: The sort here is putting the second decoder packet in the wrong position. It needs to be moved one back.
       packet_one_position = sortable_packets.find_index { |packet| packet.data.to_s == DECODER_PACKET_ONE } + 1
       packet_two_position = sortable_packets.find_index { |packet| packet.data.to_s == DECODER_PACKET_TWO } + 1
       packet_one_position * packet_two_position
